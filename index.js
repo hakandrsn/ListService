@@ -1,0 +1,28 @@
+const express = require("express");
+const app = express();
+const helmet = require("helmet");
+const cors = require("cors");
+const route = require("./routes");
+const errorMw = require("./middleware/error.mw")
+const morgan = require("morgan");
+const path = require("path");
+require("dotenv").config();
+require("./connection/mongoose");
+
+app.use(cors());
+app.use(express.static(path.resolve(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "/src/uploads")));
+app.use(express.json());
+app.use(helmet());
+app.use(morgan("common"));
+
+app.use("/api/food", route.food);
+app.use("/api/list", route.list);
+app.use("/api/activities", route.activity);
+
+app.use(errorMw)
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
