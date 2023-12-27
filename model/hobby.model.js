@@ -1,19 +1,16 @@
 const mongoose = require("mongoose");
 const { hobby_types, hobby_category } = require("../constant/model.types");
 const Schema = mongoose.Schema;
+const { comman_model } = require("./commonModel")
 
 const HobbySchema = new Schema(
   {
-    title: { type: String, required: true },
-    descriptions: String,
-    point: Number,
-    meta: {
-      likes: Number,
-      favs: Number,
-      dislikes: Number,
-    },
-    type: { enum: hobby_types },
-    category: { enum: hobby_category },
+    ...comman_model,
+    type: { type: [String], enum: hobby_types },
+    tools: Array,
+    hobbyTime: Number,
+    level: Number,
+    numberOfParticipants: Number,
   },
   {
     collection: "hobby",

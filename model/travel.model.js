@@ -1,19 +1,15 @@
 const mongoose = require("mongoose");
 const { travel_types, travel_category } = require("../constant/model.types");
 const Schema = mongoose.Schema;
+const { comman_model } = require("./commonModel")
 
 const TravelSchema = new Schema(
   {
-    title: { type: String, required: true },
-    descriptions: String,
-    point: Number,
-    meta: {
-      likes: Number,
-      favs: Number,
-      dislikes: Number,
-    },
-    type: { enum: travel_types },
-    category: { enum: travel_category },
+    ...comman_model,
+    type: { type: [String], enum: travel_types },
+    destination: String, // hedef
+    transportationType: String,
+    activitiesPlanned: Array,
   },
   {
     collection: "travel",

@@ -1,3 +1,5 @@
+require("dotenv").config();
+require("./connection/mongoose");
 const express = require("express");
 const app = express();
 const helmet = require("helmet");
@@ -6,8 +8,6 @@ const route = require("./routes");
 const errorMw = require("./middleware/error.mw")
 const morgan = require("morgan");
 const path = require("path");
-require("dotenv").config();
-require("./connection/mongoose");
 
 app.use(cors());
 app.use(express.static(path.resolve(__dirname, "public")));
@@ -16,9 +16,15 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 
+app.use('/auth', route.auth);
+app.use('/user', route.user);
+
 app.use("/api/food", route.food);
-app.use("/api/list", route.list);
 app.use("/api/activities", route.activity);
+app.use("/api/game", route.game)
+app.use("/api/hobby", route.hobby)
+app.use("/api/travel", route.travel)
+
 
 app.use(errorMw)
 

@@ -2,7 +2,7 @@
 const createHttpError = require("http-errors");
 const Food = require("../model/food.model.js");
 
-const getAllFood = async (req, res, next) => {
+const getFoods = async (req, res, next) => {
   try {
     const food = await Food.find();
     if (!food) {
@@ -18,7 +18,7 @@ const getAllFood = async (req, res, next) => {
 const getFood = async (req, res, next) => {
   console.log(req?.body);
   try {
-    const food = await Food.find();
+    const food = await Food.find(req.body._id);
     if (!food) {
       throw createHttpError(500, "Work not found");
     } else {
@@ -28,19 +28,8 @@ const getFood = async (req, res, next) => {
     return next(e);
   }
 };
-const getRandomFood = async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
-  }
-};
-const getFoodWithId = async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
-  }
-};
-const setFood = async (req, res, next) => {
+
+const saveFood = async (req, res, next) => {
   try {
     const food = new Food(req.body);
     const result = await food.save();
@@ -54,10 +43,25 @@ const setFood = async (req, res, next) => {
   }
 };
 
+const updateFood = async (req, res, next) => {
+  try {
+    if (req.body._id) {
+      const backupId = req.body._id
+      delete req.body._id
+      const food = await Food.findByIdAndUpdate(backupId, req.body, { new: true });
+      if (!food) {
+        throw createHttpError(403, "Güncellenemedi");
+      }
+      return res.status(200).json({ message: "Güncellendi" });
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
-  getAllFood,
+  getFoods,
   getFood,
-  getRandomFood,
-  getFoodWithId,
-  setFood,
+  saveFood,
+  updateFood
 };

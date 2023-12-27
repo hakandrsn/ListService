@@ -1,9 +1,18 @@
-const food_router = require("./food.router");
-const list_router = require("./mainList.router");
+const Food = require("./food.router");
 const Activity = require("./activity.router");
+const Game = require("./game.router");
+const Hobby = require("./hobby.router");
+const Travel = require("./travel.router");
+const Auth = require("./auth.router")
+const User = require("./user.router")
+
 
 module.exports = {
-  food: food_router,
-  list: list_router,
+  food: Food,
   activity: Activity,
+  game: Game,
+  hobby: Hobby,
+  travel: Travel,
+  auth: Auth,
+  user: User
 };

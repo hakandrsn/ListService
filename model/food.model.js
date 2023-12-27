@@ -1,11 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const {
+  food_types,
+} = require("../constant/model.types");
+const { comman_model } = require("./commonModel")
 
 const FoodSchema = new Schema(
   {
-    foodName: { type: String, required: true, lowercase: true },
+    ...comman_model,
+    type: { type: [String], enum: food_types },
+    ingredients: { type: Array },
     prepareTime: { type: Number, required: true },
-    description: { type: String, required: true },
+    cookingTime: Number,
+    cookingMethod: String,
+    serviceSize: Schema.Types.Mixed,
+    caloricValue: Number,
   },
   { collection: "foods", timestamps: true }
 );

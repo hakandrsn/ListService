@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const {
   activity_types,
-  activity_category,
+  skill_level,
 } = require("../constant/model.types");
 const Schema = mongoose.Schema;
+const { comman_model } = require("./commonModel")
 
 const TypeSchema = new Schema({
   title: String,
@@ -11,16 +12,13 @@ const TypeSchema = new Schema({
 
 const ActivitySchema = new Schema(
   {
-    title: { type: String, required: true },
-    descriptions: String,
-    point: Number,
-    meta: {
-      likes: { type: Number, default: 0 },
-      favs: { type: Number, default: 0 },
-      dislikes: { type: Number, default: 0 },
-    },
-    type: { type: [String], enum: activity_types},
-    category: { type: [String], enum: activity_category},
+    ...comman_model,
+    type: { type: [String], enum: activity_types },
+    duration: Number,
+    location: String,
+    materialsNeeded:Array,
+    skillLevel:{enum:skill_level},
+    participants:Number,
   },
   {
     collection: "activity",
