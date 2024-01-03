@@ -7,11 +7,9 @@ const hobby_types = ["personal", "home", "sport", "music", "painting", "writing"
 const hobby_category = ["home", "out", "daily"];
 
 // foods.js
-const food_types = ["main", "dessert", "salad", "soup", "snack"];
 const food_category = ["lunch", "breakfast", "dinner"];
 
 // games.js
-const game_types = ["action", "adventure", "puzzle", "strategy", "group", "card", "outdoor"];
 const game_category = ["home", "out", "daily"];
 const gameplay = ["group", "personel", "team", "family"]
 
@@ -19,16 +17,30 @@ const gameplay = ["group", "personel", "team", "family"]
 const travel_types = ["adventure", "leisure", "business", "camping"];
 const travel_category = ["home", "out", "daily"];
 
+
+
+//kullanılanlar !!
 const skill_level = ["beginner", "intermediate", "advanced"]
 
+const eventGameTypes = ["intelligent", "card", "talk", "skill", "sport", "action", "adventure", "puzzle", "strategy", "group", "outdoor", "box"] // okey
+const eventLocation = ["indoor", "outdoor", "sport"]
+const eventWithWho = ["alone", "family", "friends", "beloved"]
+const eventKind = ["breakfast", "appetizer", "salad", "drink", "hot_appetizers", "main_food", "pastry"]; //okey
+const eventTime = ["monthly", "daily", "yearly", "regular"]
+const eventTravellocation = ["anywhere", "country"]
+
 module.exports = {
+  eventLocation,
+  eventWithWho,
+  eventTravellocation,
+  eventTime,
   activity_types,
   activity_category,
   hobby_types,
   hobby_category,
-  food_types,
+  eventKind,
   food_category,
-  game_types,
+  eventGameTypes,
   game_category,
   travel_types,
   travel_category,

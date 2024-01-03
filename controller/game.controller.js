@@ -34,7 +34,7 @@ const saveGame = async (req, res, next) => {
     const game = new Game(req.body);
     const result = await game.save();
     if (!result) {
-      throw createHttpError(404, "Yemek Yapılamadı");
+      throw createHttpError(404, "başarısız");
     } else {
       return res.status(200).json(result);
     }

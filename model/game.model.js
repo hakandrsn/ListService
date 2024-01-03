@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
-const { game_types, game_category, gameplay } = require("../constant/model.types");
+const { eventGameTypes, eventLocation } = require("../constant/model.types");
 const { comman_model } = require("./commonModel")
 const Schema = mongoose.Schema;
 
 const GameSchema = new Schema(
   {
     ...comman_model,
-    type: { type: [String], enum: game_types },
-    gameplay: { enum: gameplay },
+    eventGameTypes: { type: [String], enum: eventGameTypes },
+    eventLocation: { type: [String], enum: eventLocation },
     equipment: Array,
     level: Number,
     rules: Array,
     time: Number,
-    numberOfParticipants: Number,
+    eventParticipants: Number,
   },
   {
     collection: "game",

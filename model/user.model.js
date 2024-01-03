@@ -21,7 +21,7 @@ const UserSchema = new Schema(
 
     },
     {
-        collection: "travel",
+        collection: "user",
         timestamps: true,
     }
 );
@@ -48,5 +48,5 @@ UserSchema.pre('save', async function (next) {
         return food;
     };
 
-const User = mongoose.model("Travel", UserSchema);
+const User = mongoose.model("User", UserSchema);
 module.exports = User;

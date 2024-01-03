@@ -1,24 +1,23 @@
 const mongoose = require("mongoose");
 const {
-  activity_types,
   skill_level,
+  eventWithWho,
+  eventLocation
 } = require("../constant/model.types");
 const Schema = mongoose.Schema;
 const { comman_model } = require("./commonModel")
 
-const TypeSchema = new Schema({
-  title: String,
-});
-
 const ActivitySchema = new Schema(
   {
     ...comman_model,
-    type: { type: [String], enum: activity_types },
+    eventLocation: { type: [String], enum: eventLocation },
+    eventWithWho: { type: [String], enum: eventWithWho },
     duration: Number,
     location: String,
-    materialsNeeded:Array,
-    skillLevel:{enum:skill_level},
-    participants:Number,
+    materialsNeeded: Array,
+    skillLevel: { type: String, enum: skill_level, default: "beginner" },
+    participants: Number,
+    price: String
   },
   {
     collection: "activity",
