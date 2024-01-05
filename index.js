@@ -5,7 +5,7 @@ const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
 const route = require("./routes");
-const errorMw = require("./middleware/error.mw")
+const errorMw = require("./middleware/error.mw");
 const morgan = require("morgan");
 const path = require("path");
 
@@ -16,17 +16,20 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 
-app.use('/auth', route.auth);
-app.use('/user', route.user);
+app.use("/auth", route.auth);
+app.use("/user", route.user);
 
 app.use("/api/food", route.food);
 app.use("/api/activities", route.activity);
-app.use("/api/game", route.game)
-app.use("/api/hobby", route.hobby)
-app.use("/api/travel", route.travel)
+app.use("/api/game", route.game);
+app.use("/api/hobby", route.hobby);
+app.use("/api/travel", route.travel);
 
+app.use("/", (req, res, next) => {
+  return res.status(200).json({ title: "başarılı" });
+});
 
-app.use(errorMw)
+app.use(errorMw);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
