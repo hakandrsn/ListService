@@ -10,8 +10,8 @@ const { comman_model } = require("./commonModel")
 const ActivitySchema = new Schema(
   {
     ...comman_model,
-    eventLocation: { type: [String], enum: eventLocation },
-    eventWithWho: { type: [String], enum: eventWithWho },
+    list: { type: [String], enum: eventLocation },
+    list_two: { type: [String], enum: eventWithWho },
     duration: Number,
     location: String,
     materialsNeeded: Array,

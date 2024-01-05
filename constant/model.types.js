@@ -23,7 +23,7 @@ const travel_category = ["home", "out", "daily"];
 const skill_level = ["beginner", "intermediate", "advanced"]
 
 const eventGameTypes = ["intelligent", "card", "talk", "skill", "sport", "action", "adventure", "puzzle", "strategy", "group", "outdoor", "box"] // okey
-const eventLocation = ["indoor", "outdoor", "sport"]
+const eventLocation = ["personal", "indoor", "outdoor", "sport", "art-craft"];
 const eventWithWho = ["alone", "family", "friends", "beloved"]
 const eventKind = ["breakfast", "appetizer", "salad", "drink", "hot_appetizers", "main_food", "pastry"]; //okey
 const eventTime = ["monthly", "daily", "yearly", "regular"]

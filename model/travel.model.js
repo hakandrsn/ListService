@@ -6,7 +6,7 @@ const { comman_model } = require("./commonModel")
 const TravelSchema = new Schema(
   {
     ...comman_model,
-    eventTravellocation: { type: [String], enum: eventTravellocation },
+    list: { type: [String], enum: eventTravellocation },
     destination: String, // hedef
     transportationType: String,
     activitiesPlanned: Array,

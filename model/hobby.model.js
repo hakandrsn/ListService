@@ -6,7 +6,7 @@ const { comman_model } = require("./commonModel")
 const HobbySchema = new Schema(
   {
     ...comman_model,
-    eventTime: { type: [String], enum: eventTime },
+    list: { type: [String], enum: eventTime },
     tools: Array,
     hobbyTime: Number,
     level: Number,

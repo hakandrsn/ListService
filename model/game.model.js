@@ -6,8 +6,8 @@ const Schema = mongoose.Schema;
 const GameSchema = new Schema(
   {
     ...comman_model,
-    eventGameTypes: { type: [String], enum: eventGameTypes },
-    eventLocation: { type: [String], enum: eventLocation },
+    list_two: { type: [String], enum: eventGameTypes },
+    list: { type: [String], enum: eventLocation },
     equipment: Array,
     level: Number,
     rules: Array,
