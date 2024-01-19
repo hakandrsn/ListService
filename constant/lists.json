@@ -1,5 +1,5 @@
 {
-  "activity_one": ["personal", "indoor", "outdoor", "sport", "art-craft"],
+  "activity_one": ["personal", "indoor", "outdoor", "sport", "art_craft"],
   "activity_two": ["alone", "family", "friends", "loved"],
   "game_one": [
     "intelligent",
@@ -15,7 +15,7 @@
     "outdoor",
     "box"
   ],
-  "game_two": ["personal", "indoor", "outdoor", "sport", "art-craft"],
+  "game_two": ["personal", "indoor", "outdoor", "sport", "art_craft"],
   "food_one": [
     "breakfast",
     "appetizer",
