@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { eventTime } = require("../constant/model.types");
+const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
-const { comman_model } = require("./commonModel")
+const { comman_model } = require("./commonModel");
 
 const HobbySchema = new Schema(
   {
     ...comman_model,
-    list: { type: [String], enum: eventTime },
+    list: { type: [String], enum: list.hobby_one },
     tools: Array,
     hobbyTime: Number,
     level: Number,

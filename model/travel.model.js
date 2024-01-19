@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { eventTravellocation } = require("../constant/model.types");
+const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
-const { comman_model } = require("./commonModel")
+const { comman_model } = require("./commonModel");
 
 const TravelSchema = new Schema(
   {
     ...comman_model,
-    list: { type: [String], enum: eventTravellocation },
+    list: { type: [String], enum: list.travel_one },
     destination: String, // hedef
     transportationType: String,
     activitiesPlanned: Array,

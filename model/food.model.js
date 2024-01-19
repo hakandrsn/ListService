@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { eventKind } = require("../constant/model.types");
+const list = require("../constant/lists.json");
 const { comman_model } = require("./commonModel");
 
 const FoodSchema = new Schema(
   {
     ...comman_model,
-    list: { type: [String], enum: eventKind },
+    list: { type: [String], enum: list.food_one },
     ingredients: { type: [{ title: String, amount: String }] },
     prepareTime: { type: Number, required: true },
     cookingTime: Number,

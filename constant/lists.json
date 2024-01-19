@@ -1,0 +1,46 @@
+{
+  "activity_one": ["personal", "indoor", "outdoor", "sport", "art-craft"],
+  "activity_two": ["alone", "family", "friends", "loved"],
+  "game_one": [
+    "intelligent",
+    "card",
+    "talk",
+    "skill",
+    "sport",
+    "action",
+    "adventure",
+    "puzzle",
+    "strategy",
+    "group",
+    "outdoor",
+    "box"
+  ],
+  "game_two": ["personal", "indoor", "outdoor", "sport", "art-craft"],
+  "food_one": [
+    "breakfast",
+    "appetizer",
+    "salad",
+    "drink",
+    "hot_appetizers",
+    "main_food",
+    "pastry",
+    "soup"
+  ],
+  "food_two": [],
+  "travel_one": [
+    "honeymoon",
+    "sea_vacation",
+    "winter_vacation",
+    "natural_beauty",
+    "art_trip",
+    "hictorical",
+    "country",
+    "anywhere"
+  ],
+  "travel_two": [],
+  "hobby_one": ["daily", "monthly", "yearly", "regular"],
+  "hobby_two": [],
+  "challenge_one": ["random", "personel", "friend", "family"],
+  "challenge_tow": ["outdoor", "indoor", "sport"],
+  "skill_level": ["beginner", "intermediate", "advanced"]
+}
