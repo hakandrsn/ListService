@@ -1,16 +1,15 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const User = require('../model/user.model');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const User = require("../model/user.model");
 
 // Register a new user
 const register = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { password } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword });
+    const user = new User(req.body);
     await user.save();
-    res.json({ message: 'Registration successful' });
+    res.json({ message: "Registration successful" });
   } catch (error) {
     next(error);
   }
@@ -18,21 +17,21 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const passwordMatch = await user.comparePassword(password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: 'Incorrect password' });
+      return res.status(401).json({ message: "Incorrect password" });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: '10 hour'
+      expiresIn: "10 hour",
     });
     res.json({ token });
   } catch (error) {
