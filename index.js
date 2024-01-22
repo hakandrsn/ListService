@@ -20,7 +20,7 @@ app.use("/auth", route.auth);
 app.use("/user", route.user);
 
 app.use("/api/food", route.food);
-app.use("/api/activities", route.activity);
+app.use("/api/activity", route.activity);
 app.use("/api/game", route.game);
 app.use("/api/hobby", route.hobby);
 app.use("/api/travel", route.travel);
