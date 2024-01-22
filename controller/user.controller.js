@@ -36,7 +36,9 @@ const login = async (req, res, next) => {
         fullname: `${user.firstname} ${user.lastname}`,
         age: user.age,
         email: user.email,
-        image: user.profileImage
+        image: user.profileImage,
+        followers: user.followers,
+        friends: user.friends,
       },
       process.env.SECRET_KEY,
       {

@@ -20,6 +20,8 @@ const UserSchema = new Schema(
     lastLoggedIn: Date,
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
     point: { type: Number, default: 0 },
+    followers: { type: Number, default: 0 },
+    friends: { type: Number, default: 0 },
   },
   {
     collection: "users",
