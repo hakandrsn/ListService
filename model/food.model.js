@@ -14,7 +14,7 @@ const FoodSchema = new Schema(
     serviceSize: Schema.Types.Mixed,
     caloricValue: Number,
   },
-  { collection: "foods", timestamps: true }
+  { collection: "food", timestamps: true }
 );
 
 FoodSchema.methods.toJSON = function () {
