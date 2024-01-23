@@ -11,8 +11,8 @@ const GameSchema = new Schema(
     equipment: Array,
     skillLevel: { type: String, enum: list.skill_level, default: "beginner" },
     rules: Array,
-    time: Number,
-    eventParticipants: Number,
+    time: String,
+    eventParticipants: { type: [Number], default: [1] },
   },
   {
     collection: "game",
