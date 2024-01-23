@@ -15,7 +15,7 @@
     "outdoor",
     "box"
   ],
-  "game_two": ["personal", "indoor", "outdoor", "sport", "art_craft"],
+  "game_two": ["personal", "indoor", "outdoor", "art_craft"],
   "food_one": [
     "breakfast",
     "appetizer",
