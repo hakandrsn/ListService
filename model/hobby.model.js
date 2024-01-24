@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
 const { comman_model } = require("./commonModel");
+const { HOBBY } = require("../constant/keywords");
 
 const HobbySchema = new Schema(
   {
@@ -13,7 +14,7 @@ const HobbySchema = new Schema(
     eventParticipants: Number,
   },
   {
-    collection: "hobby",
+    collection: HOBBY,
     timestamps: true,
   }
 );

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
 const { comman_model } = require("./commonModel");
-
+const { ACTİVİTY } = require("../constant/keywords");
 const ActivitySchema = new Schema(
   {
     ...comman_model,
@@ -20,7 +20,7 @@ const ActivitySchema = new Schema(
     price: String,
   },
   {
-    collection: "activity",
+    collection: ACTİVİTY,
     timestamps: true,
   }
 );
