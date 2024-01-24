@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const list = require("../constant/lists.json");
 const { comman_model } = require("./commonModel");
 const Schema = mongoose.Schema;
-const { GAME } = require("../constant/keywords");
 
 const GameSchema = new Schema(
   {
@@ -16,7 +15,7 @@ const GameSchema = new Schema(
     eventParticipants: { type: [Number], default: [1] },
   },
   {
-    collection: GAME,
+    collection: "game",
     timestamps: true,
   }
 );

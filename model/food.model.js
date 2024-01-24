@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const list = require("../constant/lists.json");
 const { comman_model } = require("./commonModel");
-const { FOOD } = require("../constant/keywords");
 
 const FoodSchema = new Schema(
   {
@@ -15,7 +14,7 @@ const FoodSchema = new Schema(
     serviceSize: Schema.Types.Mixed,
     caloricValue: Number,
   },
-  { collection: FOOD, timestamps: true }
+  { collection: "food", timestamps: true }
 );
 
 FoodSchema.methods.toJSON = function () {
