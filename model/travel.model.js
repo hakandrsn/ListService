@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
 const { comman_model } = require("./commonModel");
+const { TRAVEL } = require("../constant/keywords");
 
 const TravelSchema = new Schema(
   {
@@ -12,7 +13,7 @@ const TravelSchema = new Schema(
     activitiesPlanned: Array,
   },
   {
-    collection: "travel",
+    collection: TRAVEL,
     timestamps: true,
   }
 );
