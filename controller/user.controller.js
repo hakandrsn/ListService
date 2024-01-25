@@ -106,24 +106,20 @@ const addMission = async (req, res, next) => {
     const { mission } = req.body;
     const { _id, currentMission } = req.user;
     if (!mission) return res.status(404).json({ message: "empty_mission" });
-    if (mission && mission.category && mission._id) {
-      if (currentMission.length >= 3) {
-        return res.status(206).json({ message: "max_current_mission" });
-      } else if (currentMission.some((i) => i._id === mission._id)) {
-        return res.status(206).json({ message: "mission_already_available" });
-      } else {
-        const newMission = { ...mission, addedDate: Date.now() };
-        const newCurrentMission = [...currentMission, newMission];
-        const doc = await User.findById(_id);
-        doc.currentMission = newCurrentMission;
-        const result = await doc.save();
-        if (!result) {
-          return res.status(410).json({ message: "mission_save_failed" });
-        }
-        return res.status(200).json({ message: "mission_save_success" });
-      }
+    if (currentMission.length >= 3) {
+      return res.status(206).json({ message: "max_current_mission" });
+    } else if (currentMission.some((i) => i._id === mission._id)) {
+      return res.status(206).json({ message: "mission_already_available" });
     } else {
-      return res.status(206).json({ message: "incomplete_data" });
+      const newMission = { ...mission, addedDate: Date.now() };
+      const newCurrentMission = [...currentMission, newMission];
+      const doc = await User.findById(_id);
+      doc.currentMission = newCurrentMission;
+      const result = await doc.save();
+      if (!result) {
+        return res.status(410).json({ message: "mission_save_failed" });
+      }
+      return res.status(200).json({ message: "mission_save_success" });
     }
   } catch (error) {
     next(error);
