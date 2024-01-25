@@ -33,9 +33,9 @@ const UserSchema = new Schema(
     },
     followers: { type: Number, default: 0 },
     friends: { type: Number, default: 0 },
-    currentMission: { type: Array },
-    completeMission: { type: Array },
-    failedMission: { type: Array },
+    currentMission: { type: Array, default: [] },
+    completeMission: { type: Array, default: [] },
+    failedMission: { type: Array, default: [] },
   },
   {
     collection: "users",

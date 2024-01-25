@@ -72,9 +72,18 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, accessToken } = req.body;
 
   try {
+    if (accessToken) {
+      const facebookUser = await User.findOne({
+        socialPlatform: { platformToken: accessToken },
+      });
+      if (!facebookUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      return res.json(facebookUser.socialPlatform.platformToken);
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
