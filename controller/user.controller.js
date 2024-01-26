@@ -20,7 +20,6 @@ const getProfile = async (req, res, next) => {
         for (const mission of missionList) {
           if (mission.point && typeof mission.point === "number") {
             memoizePoint += mission.point;
-            return;
           }
         }
         return memoizePoint;
