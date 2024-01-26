@@ -16,17 +16,19 @@ const getProfile = async (req, res, next) => {
       let failedPoint = 0;
 
       const processMissionPoints = (missionList) => {
+        let memoizePoint = 0;
         for (const mission of missionList) {
           if (mission.point && typeof mission.point === "number") {
-            return mission.point;
+            memoizePoint += mission.point;
+            return;
           }
         }
-        return 0;
+        return memoizePoint;
       };
 
-      expectedPoint += processMissionPoints(user.currentMission);
-      completePoint += processMissionPoints(user.completeMission);
-      failedPoint += processMissionPoints(user.failedMission);
+      expectedPoint = processMissionPoints(user.currentMission);
+      completePoint = processMissionPoints(user.completeMission);
+      failedPoint = processMissionPoints(user.failedMission);
 
       return {
         expectedPoint,
