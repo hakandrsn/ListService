@@ -156,21 +156,9 @@ const deleteMission = async (req, res, next) => {
       doc.currentMission = newCurrentMission;
       if (findWillOldMission !== null) {
         if (status === "complete") {
-          if (
-            doc.completeMission.some((i) => i._id === findWillOldMission._id)
-          ) {
-            return res.status(400).json({ message: "same_mission" });
-          } else {
-            doc.completeMission.push(findWillOldMission);
-          }
+          doc.completeMission.push(findWillOldMission);
         } else if (status === "failed") {
-          if (
-            doc.completeMission.some((i) => i._id === findWillOldMission._id)
-          ) {
-            return res.status(400).json({ message: "same_mission" });
-          } else {
-            doc.failedMission.push(findWillOldMission);
-          }
+          doc.failedMission.push(findWillOldMission);
         }
       } else {
         return res.status(500).json({ message: "mission_null" });
