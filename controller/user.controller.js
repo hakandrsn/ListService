@@ -4,6 +4,7 @@ const User = require("../model/user.model");
 const Game = require("../model/game.model");
 
 const createHttpError = require("http-errors");
+const { uniq } = require("lodash");
 
 const getProfile = async (req, res, next) => {
   const user = req.user;
@@ -123,7 +124,7 @@ const addMission = async (req, res, next) => {
       const newMission = { ...mission, addedDate: Date.now() };
       const newCurrentMission = [...currentMission, newMission];
       const doc = await User.findById(_id);
-      doc.currentMission = newCurrentMission;
+      doc.currentMission = uniq(newCurrentMission);
       const result = await doc.save();
       if (!result) {
         return res.status(410).json({ message: "mission_save_failed" });
@@ -155,9 +156,21 @@ const deleteMission = async (req, res, next) => {
       doc.currentMission = newCurrentMission;
       if (findWillOldMission !== null) {
         if (status === "complete") {
-          doc.completeMission.push(findWillOldMission);
+          if (
+            doc.completeMission.some((i) => i._id === findWillOldMission._id)
+          ) {
+            return res.status(400).json({ message: "same_mission" });
+          } else {
+            doc.completeMission.push(findWillOldMission);
+          }
         } else if (status === "failed") {
-          doc.failedMission.push(findWillOldMission);
+          if (
+            doc.completeMission.some((i) => i._id === findWillOldMission._id)
+          ) {
+            return res.status(400).json({ message: "same_mission" });
+          } else {
+            doc.failedMission.push(findWillOldMission);
+          }
         }
       } else {
         return res.status(500).json({ message: "mission_null" });
