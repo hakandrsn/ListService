@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../model/user.model");
 const Game = require("../model/game.model");
 const messages = require("../constant/messages.json");
+const list = require("../constant/lists.json");
 
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
@@ -217,6 +218,41 @@ const failedmission = async (req, res, next) => {
   }
 };
 
+// const fixGameList = async (req, res, next) => {
+//   try {
+//     const allGames = await Game.find();
+//     for (const game of allGames) {
+//       const newList = [];
+//       const newListTwo = [];
+//       for (const constantItem of list.game_one) {
+//         for (const dataItem of game.list_two) {
+//           if (constantItem === dataItem) {
+//             newListTwo.push(dataItem);
+//           }
+//         }
+//       }
+
+//       for (const constantItem of list.game_two) {
+//         for (const dataItem of game.list) {
+//           if (constantItem === dataItem) {
+//             newList.push(dataItem);
+//           }
+//         }
+//       }
+//       // console.log(newList, newListTwo);
+//       game.list = newListTwo;
+//       game.list_two = newList;
+
+//       await game.save();
+//     }
+
+//     console.log("Oyun listeleri başarıyla değiştirildi.");
+//     res.send({ message: "Oyun listeleri başarıyla değiştirildi." });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 const sharePostForFeed = async (req, res, next) => {};
 
 module.exports = {
@@ -226,4 +262,5 @@ module.exports = {
   getProfile,
   failedmission,
   completemission,
+  // fixGameList,
 };

@@ -6,8 +6,8 @@ const Schema = mongoose.Schema;
 const GameSchema = new Schema(
   {
     ...comman_model,
-    list_two: { type: [String], enum: list.game_one },
-    list: { type: [String], enum: list.game_two },
+    list_two: { type: [String], enum: list.game_two },
+    list: { type: [String], enum: list.game_one },
     equipment: Array,
     skillLevel: { type: String, enum: list.skill_level, default: "beginner" },
     rules: Array,

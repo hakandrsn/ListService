@@ -10,6 +10,9 @@ router.get("/profile", authenticate, user.getProfile);
 router.put("/addmission", authenticate, user.addMission);
 router.put("/completemission", authenticate, user.completemission);
 router.put("/failedmission", authenticate, user.failedmission);
+// router.get("/fix", user.fixGameList);
+
+
 
 
 module.exports = router;
