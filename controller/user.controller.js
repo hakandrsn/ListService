@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../model/user.model");
 const Game = require("../model/game.model");
+const messages = require("../constant/messages.json");
 
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
@@ -66,7 +67,7 @@ const register = async (req, res, next) => {
   try {
     const user = new User(req.body);
     await user.save();
-    res.json({ message: "Registration successful" });
+    res.json({ message: messages.registration_successful });
   } catch (error) {
     next(error);
   }
@@ -82,18 +83,18 @@ const login = async (req, res, next) => {
         socialPlatform: { platformToken: accessToken },
       });
       if (!facebookUser) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: messages.user_not_found });
       }
       return res.json(facebookUser.socialPlatform.platformToken);
     }
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: messages.user_not_found });
     }
 
     const passwordMatch = await user.comparePassword(password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json({ message: messages.incorrect_password });
     }
 
     const token = jwt.sign(
@@ -116,11 +117,13 @@ const addMission = async (req, res, next) => {
   try {
     const { mission } = req.body;
     const { _id, currentMission } = req.user;
-    if (!mission) return res.status(404).json({ message: "empty_mission" });
+    if (!mission) throw createHttpError(404, messages.empty_mission);
     if (currentMission.length >= 3) {
-      return res.status(206).json({ message: "max_current_mission" });
+      return res.status(206).json({ message: messages.max_current_mission });
     } else if (currentMission.some((i) => i._id === mission._id)) {
-      return res.status(206).json({ message: "mission_already_available" });
+      return res
+        .status(206)
+        .json({ message: messages.mission_already_available });
     } else {
       const newMission = { ...mission, addedDate: Date.now() };
       const newCurrentMission = [...currentMission, newMission];
@@ -128,24 +131,24 @@ const addMission = async (req, res, next) => {
       doc.currentMission = uniq(newCurrentMission);
       const result = await doc.save();
       if (!result) {
-        return res.status(410).json({ message: "mission_save_failed" });
+        throw createHttpError(404, messages.mission_save_failed);
       }
-      return res.status(200).json({ message: "mission_save_success" });
+      return res.status(200).json({ message: messages.mission_save_success });
     }
   } catch (error) {
     next(error);
   }
 };
 
-const deleteMission = async (req, res, next) => {
-  try {
-    const { missionId, status } = req.body;
-    const { _id, currentMission } = req.user;
+const completemission = async (req, res, next) => {
+  const { missionId } = req.body;
+  const { _id, currentMission } = req.user;
 
+  try {
     if (!missionId) {
-      return res.status(404).json({ message: "id_required" });
+      throw createHttpError(404, messages.id_required);
     } else if (!currentMission.some((i) => i._id === missionId)) {
-      return res.status(404).json({ message: "mission_not_contain_data" });
+      throw createHttpError(404, messages.mission_not_contain_data);
     } else {
       const newCurrentMission = currentMission.filter(
         (i) => i._id !== missionId
@@ -156,21 +159,57 @@ const deleteMission = async (req, res, next) => {
       const doc = await User.findById(_id);
       doc.currentMission = newCurrentMission;
       if (findWillOldMission !== null) {
-        if (status === "complete") {
-          doc.completeMission.push(findWillOldMission);
-        } else if (status === "failed") {
-          doc.failedMission.push(findWillOldMission);
-        }
+        doc.completeMission.push({
+          ...findWillOldMission,
+          completeDate: Date.now(),
+        });
       } else {
-        return res.status(500).json({ message: "mission_null" });
+        throw createHttpError(404, messages.mission_null);
       }
       const result = await doc.save();
       if (!result) {
-        return res.status(500).json({ message: "mission_delete_failed" });
+        throw createHttpError(404, messages.mission_delete_failed);
       }
-      return res.status(500).json({
-        message:
-          status === "complete" ? "mission_add_complete" : "mission_add_failed",
+      return res.status(200).json({
+        message: messages.mission_add_complete,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+const failedmission = async (req, res, next) => {
+  const { missionId } = req.body;
+  const { _id, currentMission } = req.user;
+
+  try {
+    if (!missionId) {
+      throw createHttpError(404, messages.id_required);
+    } else if (!currentMission.some((i) => i._id === missionId)) {
+      throw createHttpError(404, messages.mission_not_contain_data);
+    } else {
+      const newCurrentMission = currentMission.filter(
+        (i) => i._id !== missionId
+      );
+      const findWillOldMission = currentMission.find(
+        (i) => i._id === missionId
+      );
+      const doc = await User.findById(_id);
+      doc.currentMission = newCurrentMission;
+      if (findWillOldMission !== null) {
+        doc.failedMission.push({
+          ...findWillOldMission,
+          failedDate: Date.now(),
+        });
+      } else {
+        throw createHttpError(404, messages.mission_null);
+      }
+      const result = await doc.save();
+      if (!result) {
+        throw createHttpError(404, messages.mission_delete_failed);
+      }
+      return res.status(200).json({
+        message: messages.mission_failed_complete,
       });
     }
   } catch (error) {
@@ -178,26 +217,13 @@ const deleteMission = async (req, res, next) => {
   }
 };
 
-const randomResult = async (req, res, next) => {
-  // try {
-  //   const { mainPath, list_one, list_two } = req.body;
-  //   if (mainPath) {
-  //     if (mainPath === GAME) {
-  //       if(list_one && list_two) {
-  //         const randomGame = await Game.findRandom
-  //       }
-  //     }
-  //   }
-  // } catch (error) {
-  //   next(error);
-  // }
-};
+const sharePostForFeed = async (req, res, next) => {};
 
 module.exports = {
   register,
   login,
   addMission,
-  deleteMission,
   getProfile,
-  // randomResult,
+  failedmission,
+  completemission,
 };

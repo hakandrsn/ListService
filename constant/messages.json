@@ -1,0 +1,16 @@
+{
+  "id_required": "ID is required",
+  "mission_not_contain_data": "Mission is already included in the data",
+  "mission_null": "Mission is null",
+  "mission_delete_failed": "Failed to delete mission",
+  "mission_add_complete": "Mission added successfully",
+  "mission_failed_complete": "Mission failed successfully",
+  "empty_mission": "Empty mission",
+  "max_current_mission": "Maximum current missions reached",
+  "mission_already_available": "Mission is already available",
+  "mission_save_failed": "Failed to save mission",
+  "mission_save_success": "Mission saved successfully",
+  "user_not_found": "User not found",
+  "incorrect_password": "Incorrect password",
+  "registration_successful": "Registration successful"
+}

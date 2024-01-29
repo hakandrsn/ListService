@@ -8,6 +8,8 @@ router.get("/profile", authenticate, user.getProfile);
 // router.get("/random", authenticate, user.ge);
 
 router.put("/addmission", authenticate, user.addMission);
-router.put("/deletemission", authenticate, user.deleteMission);
+router.put("/completemission", authenticate, user.completemission);
+router.put("/failedmission", authenticate, user.failedmission);
+
 
 module.exports = router;
