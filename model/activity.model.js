@@ -15,7 +15,7 @@ const ActivitySchema = new Schema(
       enum: list.skill_level,
       default: list.skill_level[0],
     },
-    participants: Number,
+    participants: { type: [Number], default: [1] },
     price: String,
   },
   {
