@@ -1,37 +1,38 @@
 // const User = require("../model/userModel.js");
 const createHttpError = require("http-errors");
-const Game = require("../model/game.model.js");
+const Challange = require("../model/challenge.model.js");
 
-const getGames = async (req, res, next) => {
+const getchallanges = async (req, res, next) => {
   try {
-    const game = await Game.find();
-    if (!game) {
+    const challange = await Challange.find();
+    if (!challange) {
       throw createHttpError(404, "Work not found");
     } else {
-      return res.status(200).json(game);
+      return res.status(200).json(challange);
     }
   } catch (e) {
     return next(e);
   }
 };
 
-const getGame = async (req, res, next) => {
+const getchallange = async (req, res, next) => {
+  console.log(req?.body);
   try {
-    const game = await Game.find(req.body._id);
-    if (!game) {
+    const challange = await Challange.find(req.body._id);
+    if (!challange) {
       throw createHttpError(500, "Work not found");
     } else {
-      return res.status(500).json(game);
+      return res.status(500).json(challange);
     }
   } catch (e) {
     return next(e);
   }
 };
 
-const saveGame = async (req, res, next) => {
+const savechallange = async (req, res, next) => {
   try {
-    const game = new Game(req.body);
-    const result = await game.save();
+    const challange = new Challange(req.body);
+    const result = await challange.save();
     if (!result) {
       throw createHttpError(404, "başarısız");
     } else {
@@ -42,13 +43,13 @@ const saveGame = async (req, res, next) => {
   }
 };
 
-const updateGame = async (req, res, next) => {
+const updatechallange = async (req, res, next) => {
   try {
     if (req.body._id) {
       const backupId = req.body._id
       delete req.body._id
-      const game = await Game.findByIdAndUpdate(backupId, req.body, { new: true });
-      if (!game) {
+      const challange = await Challange.findByIdAndUpdate(backupId, req.body, { new: true });
+      if (!challange) {
         throw createHttpError(403, "Güncellenemedi");
       }
       return res.status(200).json({ message: "Güncellendi" });
@@ -59,8 +60,8 @@ const updateGame = async (req, res, next) => {
 };
 
 module.exports = {
-  getGames,
-  getGame,
-  saveGame,
-  updateGame
+  getchallanges,
+  getchallange,
+  savechallange,
+  updatechallange
 };

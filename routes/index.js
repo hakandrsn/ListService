@@ -3,9 +3,10 @@ const Activity = require("./activity.router");
 const Game = require("./game.router");
 const Hobby = require("./hobby.router");
 const Travel = require("./travel.router");
-const Auth = require("./auth.router")
-const User = require("./user.router")
-
+const Auth = require("./auth.router");
+const User = require("./user.router");
+const DailyRecommendation = require("./dailyRecommendation.router");
+const Challenge = require("./challenge.router");
 
 module.exports = {
   food: Food,
@@ -14,5 +15,7 @@ module.exports = {
   hobby: Hobby,
   travel: Travel,
   auth: Auth,
-  user: User
+  user: User,
+  recommedation: DailyRecommendation,
+  challenge: Challenge,
 };

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
+const { userPoint } = require("../utils/methods");
+const createHttpError = require("http-errors");
 
 const UserSchema = new Schema(
   {
@@ -33,15 +35,31 @@ const UserSchema = new Schema(
     },
     followers: { type: Number, default: 0 },
     friends: { type: Number, default: 0 },
-    currentMission: { type: Array, default: [] },
-    completeMission: { type: Array, default: [] },
-    failedMission: { type: Array, default: [] },
+    currentMission: [
+      { id: String, addedDate: Date, category: String, finishDate: Date },
+    ],
+    completeMission: [
+      { id: String, addedDate: Date, category: String, finishDate: Date },
+    ],
+    failedMission: [
+      { id: String, addedDate: Date, category: String, finishDate: Date },
+    ],
   },
   {
     collection: "users",
     timestamps: true,
   }
 );
+
+// UserSchema.pre("findById", async (next) => {
+//   const user = this;
+//   try {
+//     user.point = await userPoint(user);
+//     next();
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
 
 UserSchema.pre("save", async function (next) {
   const user = this;

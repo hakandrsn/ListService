@@ -1,4 +1,5 @@
 {
+  "lists_name": ["activity", "game", "food", "hobby", "travel", "challenge"],
   "activity_one": ["personal", "indoor", "outdoor", "sport", "art_craft"],
   "activity_two": ["alone", "family", "friends", "loved"],
   "game_one": [

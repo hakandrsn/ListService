@@ -4,39 +4,26 @@ const User = require("../model/user.model");
 const Game = require("../model/game.model");
 const messages = require("../constant/messages.json");
 const list = require("../constant/lists.json");
+const Travel = require("../model/travel.model.js");
+const Hobby = require("../model/hobby.model.js");
+const Activity = require("../model/activity.model.js");
+const Challenge = require("../model/challenge.model.js");
+const Food = require("../model/food.model.js");
 
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
+const { getCategoryDataWithId, userPoint } = require("../utils/methods.js");
 
 const getProfile = async (req, res, next) => {
   const user = req.user;
   try {
     if (!user) return res.status(404).json({ message: "User not found" });
-    const userPoint = () => {
-      let expectedPoint = 0;
-      let completePoint = 0;
-      let failedPoint = 0;
+    
 
-      const processMissionPoints = (missionList) => {
-        let memoizePoint = 0;
-        for (const mission of missionList) {
-          if (mission.point && typeof mission.point === "number") {
-            memoizePoint += mission.point;
-          }
-        }
-        return memoizePoint;
-      };
-
-      expectedPoint = processMissionPoints(user.currentMission);
-      completePoint = processMissionPoints(user.completeMission);
-      failedPoint = processMissionPoints(user.failedMission);
-
-      return {
-        expectedPoint,
-        completePoint,
-        failedPoint,
-      };
-    };
+    const completeMission = await getCategoryDataWithId(user.completeMission);
+    const currentMission = await getCategoryDataWithId(user.currentMission);
+    const failedMission = await getCategoryDataWithId(user.failedMission);
+    const point = userPoint(user);
 
     const sendavaibleUser = {
       _id: user._id,
@@ -49,10 +36,10 @@ const getProfile = async (req, res, next) => {
       profileImage: user.profileImage,
       followers: user.followers,
       friends: user.friends,
-      completeMission: user.completeMission,
-      currentMission: user.currentMission,
-      failedMission: user.failedMission,
-      point: userPoint(),
+      completeMission: completeMission,
+      currentMission: currentMission,
+      failedMission: failedMission,
+      point: point,
     };
 
     return res.status(200).json(sendavaibleUser);
@@ -119,14 +106,18 @@ const addMission = async (req, res, next) => {
     const { mission } = req.body;
     const { _id, currentMission } = req.user;
     if (!mission) throw createHttpError(404, messages.empty_mission);
-    if (currentMission.length >= 3) {
+    if (currentMission?.length >= 3) {
       return res.status(206).json({ message: messages.max_current_mission });
     } else if (currentMission.some((i) => i._id === mission._id)) {
       return res
         .status(206)
         .json({ message: messages.mission_already_available });
     } else {
-      const newMission = { ...mission, addedDate: Date.now() };
+      const newMission = {
+        id: mission._id,
+        addedDate: Date.now(),
+        category: mission.category,
+      };
       const newCurrentMission = [...currentMission, newMission];
       const doc = await User.findById(_id);
       doc.currentMission = uniq(newCurrentMission);
@@ -148,21 +139,21 @@ const completemission = async (req, res, next) => {
   try {
     if (!missionId) {
       throw createHttpError(404, messages.id_required);
-    } else if (!currentMission.some((i) => i._id === missionId)) {
+    } else if (!currentMission.some((i) => i.id === missionId)) {
       throw createHttpError(404, messages.mission_not_contain_data);
     } else {
       const newCurrentMission = currentMission.filter(
-        (i) => i._id !== missionId
+        (i) => i.id !== missionId
       );
-      const findWillOldMission = currentMission.find(
-        (i) => i._id === missionId
-      );
+      const findWillOldMission = currentMission.find((i) => i.id === missionId);
       const doc = await User.findById(_id);
       doc.currentMission = newCurrentMission;
       if (findWillOldMission !== null) {
         doc.completeMission.push({
-          ...findWillOldMission,
-          completeDate: Date.now(),
+          id: findWillOldMission.id,
+          category: findWillOldMission.category,
+          addedDate: findWillOldMission.addedDate,
+          finishDate: null,
         });
       } else {
         throw createHttpError(404, messages.mission_null);
@@ -182,26 +173,26 @@ const completemission = async (req, res, next) => {
 const failedmission = async (req, res, next) => {
   const { missionId } = req.body;
   const { _id, currentMission } = req.user;
-
   try {
     if (!missionId) {
       throw createHttpError(404, messages.id_required);
-    } else if (!currentMission.some((i) => i._id === missionId)) {
+    } else if (!currentMission.some((i) => i.id === missionId)) {
       throw createHttpError(404, messages.mission_not_contain_data);
     } else {
       const newCurrentMission = currentMission.filter(
-        (i) => i._id !== missionId
+        (i) => i.id !== missionId
       );
-      const findWillOldMission = currentMission.find(
-        (i) => i._id === missionId
-      );
+      const findWillOldMission = currentMission.find((i) => i.id === missionId);
       const doc = await User.findById(_id);
       doc.currentMission = newCurrentMission;
       if (findWillOldMission !== null) {
-        doc.failedMission.push({
-          ...findWillOldMission,
-          failedDate: Date.now(),
-        });
+        const failedData = {
+          id: findWillOldMission.id,
+          addedDate: findWillOldMission.addedDate,
+          category: findWillOldMission.category,
+          finishDate: Date.now(),
+        };
+        doc.failedMission.push(failedData);
       } else {
         throw createHttpError(404, messages.mission_null);
       }
