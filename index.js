@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("./connection/mongoose");
-// require("./middleware/recommendation.mw")();
+require("./middleware/recommendation.mw")();
 const express = require("express");
 const app = express();
 const helmet = require("helmet");
