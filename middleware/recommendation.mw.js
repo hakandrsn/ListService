@@ -10,11 +10,11 @@ const Challenge = require("../model/challenge.model.js");
 const Food = require("../model/food.model.js");
 
 const recommendation = () => {
-  // "0 0 * * *"
-  schedule.scheduleJob("0 0 * * *", async function () {
+  // const rule = new schedule.RecurrenceRule();
+  // rule.minute = 30;
+  schedule.scheduleJob("0 */2 * * *", async function () {
     try {
       const randomGame = await Game.aggregate([{ $sample: { size: 1 } }]);
-      const randomFood = await Food.aggregate([{ $sample: { size: 1 } }]);
       const randomActivity = await Activity.aggregate([
         { $sample: { size: 1 } },
       ]);
@@ -30,7 +30,7 @@ const recommendation = () => {
             { $match: { list: category } },
             { $sample: { size: 1 } },
           ]);
-          return randomFood[0]?._id; // aggregate sonucu bir dizi döner, biz burada ilk öğeyi alıyoruz
+          return randomFood[0]?._id;
         })
       );
       const randomDaily = {
@@ -41,11 +41,11 @@ const recommendation = () => {
         hobby: randomHobby[0]?._id,
         challange: randomChllenge[0]?._id,
       };
-        const rec = new DailyRecommendation(randomDaily);
-        await rec.save();
-      console.log("Daily recommendation created:", randomFoods);
+      const rec = new DailyRecommendation(randomDaily);
+      await rec.save();
+      console.log("Daily recommendation created:");
     } catch (error) {
-      console.error("Error while creating daily recommendation:", error);
+      console.log("başarılamadı günlük seçici");
     }
   });
 };

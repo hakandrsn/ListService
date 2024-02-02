@@ -17,7 +17,6 @@ app.use("/uploads", express.static(path.join(__dirname, "/src/uploads")));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
-// app.use(recommendationMw)
 app.use("/auth", route.auth);
 app.use("/user", route.user);
 app.use("/api/recommendation", route.recommedation);

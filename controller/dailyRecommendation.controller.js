@@ -3,31 +3,22 @@ const DailyRecommendation = require("../model/dailyRecommendation.model.js");
 
 const getDailyRecommendation = async (req, res) => {
   try {
-    const recommendationId = req.params.id;
-
+    const recommendations = await DailyRecommendation.find()
+      .populate("game")
+      .populate("travel")
+      .populate("hobby")
+      .populate("activity")
+      .populate("food")
+      .populate("challenge")
+      .populate({
+        path: "voters",
+        model: "User", // Voters alanının referans verdiği model
+        select: "username firstname lastname", // Sadece istediğiniz alanları seçin
+      })
+      .exec();
     // Öneriyi veritabanından bul
-    const recommendation = await DailyRecommendation.aggregate([
-      {
-        $lookup: {
-          from: "users",
-          localField: "voters",
-          foreignField: "_id",
-          as: "votersInfo",
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          title: 1,
-          // Diğer öneri alanlarını da ekleyebilirsiniz
-          "votersInfo.firstname": 1,
-          "votersInfo.lastname": 1,
-          "votersInfo.point": 1,
-        },
-      },
-    ]);
 
-    res.json({ message: "Oy başarıyla eklendi", recommendation });
+    res.json({ message: "Oy başarıyla eklendi", recommendations });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Sunucu hatası" });
@@ -47,5 +38,7 @@ const setDailyRecommendation = async (req, res, next) => {
     next(e);
   }
 };
+
+
 
 module.exports = { getDailyRecommendation, setDailyRecommendation };

@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const list = require("../constant/lists.json");
 const Schema = mongoose.Schema;
-const { comman_model } = require("./commonModel");
 
 const DailyRecommedationSchema = new Schema(
   {
@@ -15,12 +13,12 @@ const DailyRecommedationSchema = new Schema(
         ref: "User",
       },
     ],
-    game: [{ type: mongoose.Schema.Types.ObjectId, ref: "Game" }],
-    travel: [{ type: mongoose.Schema.Types.ObjectId, ref: "Travel" }],
-    hobby: [{ type: mongoose.Schema.Types.ObjectId, ref: "Hobby" }],
-    activity: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
-    food: [[{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }]],
-    challenge: [{ type: mongoose.Schema.Types.ObjectId, ref: "Challenge" }],
+    game: { type: mongoose.Schema.Types.ObjectId, ref: "Game" },
+    travel: { type: mongoose.Schema.Types.ObjectId, ref: "Travel" },
+    hobby: { type: mongoose.Schema.Types.ObjectId, ref: "Hobby" },
+    activity: { type: mongoose.Schema.Types.ObjectId, ref: "Activity" },
+    food: [{ type: mongoose.Schema.Types.ObjectId, ref: "Food" }],
+    challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
   },
   {
     collection: "recommendation",
