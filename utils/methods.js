@@ -48,7 +48,7 @@ const getCategoryDataWithId = async (data) => {
   return result.filter((item) => item !== null);
 };
 
-const userPoint = (user) => {
+const userPoint = ({ completeMission, currentMission, failedMission }) => {
   let expectedPoint = 0;
   let completePoint = 0;
   let failedPoint = 0;
@@ -63,9 +63,9 @@ const userPoint = (user) => {
     return memoizePoint;
   };
 
-  expectedPoint = processMissionPoints(user.currentMission);
-  completePoint = processMissionPoints(user.completeMission);
-  failedPoint = processMissionPoints(user.failedMission);
+  expectedPoint = processMissionPoints(currentMission);
+  completePoint = processMissionPoints(completeMission);
+  failedPoint = processMissionPoints(failedMission);
 
   return {
     expectedPoint,

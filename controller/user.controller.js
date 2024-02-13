@@ -18,12 +18,11 @@ const getProfile = async (req, res, next) => {
   const user = req.user;
   try {
     if (!user) return res.status(404).json({ message: "User not found" });
-    
 
     const completeMission = await getCategoryDataWithId(user.completeMission);
     const currentMission = await getCategoryDataWithId(user.currentMission);
     const failedMission = await getCategoryDataWithId(user.failedMission);
-    const point = userPoint(user);
+    const point = userPoint({ completeMission, currentMission, failedMission });
 
     const sendavaibleUser = {
       _id: user._id,
@@ -41,7 +40,7 @@ const getProfile = async (req, res, next) => {
       failedMission: failedMission,
       point: point,
     };
-
+    console.log(point);
     return res.status(200).json(sendavaibleUser);
   } catch (error) {
     next(error);
