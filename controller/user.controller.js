@@ -1,18 +1,17 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const User = require("../model/user.model");
-const Game = require("../model/game.model");
 const messages = require("../constant/messages.json");
-const list = require("../constant/lists.json");
-const Travel = require("../model/travel.model.js");
-const Hobby = require("../model/hobby.model.js");
-const Activity = require("../model/activity.model.js");
-const Challenge = require("../model/challenge.model.js");
-const Food = require("../model/food.model.js");
-
+const cloudinary = require("../helper/cloudinary.js");
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
 const { getCategoryDataWithId, userPoint } = require("../utils/methods.js");
+
+const loginToken = async (req, res, next) => {
+  const { token } = req.body;
+  const user = jwt.decode(token, process.env.SECRET_KEY);
+  console.log(user);
+  return res.send(true);
+};
 
 const getProfile = async (req, res, next) => {
   const user = req.user;
@@ -49,12 +48,21 @@ const getProfile = async (req, res, next) => {
 
 // Register a new user
 const register = async (req, res, next) => {
-  const { password } = req.body;
-
+  console.log(req.body);
   try {
     const user = new User(req.body);
     await user.save();
-    res.json({ message: messages.registration_successful });
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        fullname: `${user.firstname} ${user.lastname}`,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "5 days",
+      }
+    );
+    res.json({ token });
   } catch (error) {
     next(error);
   }
@@ -62,7 +70,7 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
-  const { email, password, accessToken } = req.body;
+  const { emailOrUsername, password, accessToken } = req.body;
 
   try {
     if (accessToken) {
@@ -74,7 +82,16 @@ const login = async (req, res, next) => {
       }
       return res.json(facebookUser.socialPlatform.platformToken);
     }
-    const user = await User.findOne({ email });
+    function isValidEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    }
+    let user;
+    if (isValidEmail(emailOrUsername)) {
+      user = await User.findOne({ email: emailOrUsername });
+    } else {
+      user = await User.findOne({ username: emailOrUsername });
+    }
     if (!user) {
       return res.status(404).json({ message: messages.user_not_found });
     }
@@ -208,6 +225,28 @@ const failedmission = async (req, res, next) => {
   }
 };
 
+const uploadProfile = async (req, res, next) => {
+  const { _id } = req.user;
+  try {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      public_id: `${_id}_profile`,
+      width: 500,
+      height: 500,
+      crop: "fill",
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      { profileImage: result.url },
+      { new: true }
+    );
+    if (!updatedUser) return createHttpError(404, "image failed");
+    return res.send(true);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // const fixGameList = async (req, res, next) => {
 //   try {
 //     const allGames = await Game.find();
@@ -252,5 +291,7 @@ module.exports = {
   getProfile,
   failedmission,
   completemission,
+  loginToken,
+  uploadProfile,
   // fixGameList,
 };

@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const { userPoint } = require("../utils/methods");
-const createHttpError = require("http-errors");
 
 const UserSchema = new Schema(
   {
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     firstname: String,
     lastname: String,
     age: Number,
@@ -19,6 +17,7 @@ const UserSchema = new Schema(
       platformId: String,
       platformToken: String,
     },
+    randomRight: { type: Number, default: 5 },
     lastLoggedIn: Date,
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
     point: {
