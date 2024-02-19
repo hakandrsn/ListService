@@ -296,5 +296,4 @@ module.exports = {
   uploadProfile,
   getUserWithPage,
   getUsersWithSearch,
-  // fixGameList,
 };

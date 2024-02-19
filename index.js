@@ -1,5 +1,5 @@
 require("dotenv").config();
-require("./connection/mongoose");
+require("./helper/mongoose");
 require("./middleware/recommendation.mw")();
 const express = require("express");
 const app = express();
@@ -17,6 +17,7 @@ app.use("/uploads", express.static(path.join(__dirname, "/src/uploads")));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+
 app.use("/auth", route.auth);
 app.use("/user", route.user);
 app.use("/api/recommendation", route.recommedation);

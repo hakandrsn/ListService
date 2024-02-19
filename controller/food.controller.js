@@ -1,4 +1,3 @@
-// const User = require("../model/userModel.js");
 const createHttpError = require("http-errors");
 const Food = require("../model/food.model.js");
 

@@ -33,7 +33,6 @@ const UserSchema = new Schema(
         failedPoint: 0,
       },
     },
-    followers: { type: Number, default: 0 },
     friends: { type: Number, default: 0 },
     currentMission: [
       { id: String, addedDate: Date, category: String, finishDate: Date },
@@ -51,16 +50,6 @@ const UserSchema = new Schema(
   }
 );
 
-// UserSchema.pre("findById", async (next) => {
-//   const user = this;
-//   try {
-//     user.point = await userPoint(user);
-//     next();
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
-// UserSchema.index({ username: "text", firstname: "text", lastname: "text" });
 UserSchema.pre("save", async function (next) {
   const user = this;
   if (!user.isModified("password")) return next();

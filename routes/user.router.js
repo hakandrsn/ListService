@@ -9,7 +9,6 @@ const multer = require("multer");
 const storage = multer.diskStorage({});
 
 const fileFilter = (req, file, cb) => {
-  console.log(req.body.image);
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
@@ -36,3 +35,4 @@ router.get("/users/:page", authenticate, user.getUserWithPage);
 router.get("/users/search/:searchParam", authenticate, user.getUsersWithSearch);
 
 module.exports = router;
+
