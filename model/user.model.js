@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const UserSchema = new Schema(
   {
     username: { type: String, required: true, unique: true },
-    firstname: String,
-    lastname: String,
+    firstname: { type: String, index: true },
+    lastname: { type: String, index: true },
     age: Number,
     email: { type: String, unique: true },
     password: String,
@@ -17,6 +17,7 @@ const UserSchema = new Schema(
       platformId: String,
       platformToken: String,
     },
+    isCertified: { type: Boolean, default: false },
     randomRight: { type: Number, default: 5 },
     lastLoggedIn: Date,
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
@@ -59,7 +60,7 @@ const UserSchema = new Schema(
 //     return next(error);
 //   }
 // });
-
+// UserSchema.index({ username: "text", firstname: "text", lastname: "text" });
 UserSchema.pre("save", async function (next) {
   const user = this;
   if (!user.isModified("password")) return next();

@@ -15,6 +15,9 @@ ENV NODE_ENV production
 ENV MONGODB_URI mongodb+srv://napsalist:7u7BkiXnDmgLpjBo@cluster0.a5rdvmp.mongodb.net/mymongodb?retryWrites=true&w=majority
 ENV PORT 49784
 ENV SECRET_KEY 018cd991-7dc0-7480-bc4d-7129a1b30973
+ENV CLOUDINARY_USER_NAME ddwj5sqjs
+ENV CLOUDINARY_API_KEY 399116796336372
+ENV CLOUDINARY_API_SECRET DbDR3CnygcKD5dEOgwES8Pvlj08
 
 WORKDIR /usr/src/app
 

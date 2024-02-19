@@ -5,6 +5,7 @@ const cloudinary = require("../helper/cloudinary.js");
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
 const { getCategoryDataWithId, userPoint } = require("../utils/methods.js");
+const { PER_PAGE, USER_ALLOW_DATA } = require("../constant/appConstant.js");
 
 const loginToken = async (req, res, next) => {
   const { token } = req.body;
@@ -246,42 +247,42 @@ const uploadProfile = async (req, res, next) => {
     next(error);
   }
 };
-
-// const fixGameList = async (req, res, next) => {
-//   try {
-//     const allGames = await Game.find();
-//     for (const game of allGames) {
-//       const newList = [];
-//       const newListTwo = [];
-//       for (const constantItem of list.game_one) {
-//         for (const dataItem of game.list_two) {
-//           if (constantItem === dataItem) {
-//             newListTwo.push(dataItem);
-//           }
-//         }
-//       }
-
-//       for (const constantItem of list.game_two) {
-//         for (const dataItem of game.list) {
-//           if (constantItem === dataItem) {
-//             newList.push(dataItem);
-//           }
-//         }
-//       }
-//       // console.log(newList, newListTwo);
-//       game.list = newListTwo;
-//       game.list_two = newList;
-
-//       await game.save();
-//     }
-
-//     console.log("Oyun listeleri başarıyla değiştirildi.");
-//     res.send({ message: "Oyun listeleri başarıyla değiştirildi." });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
+const getUserWithPage = async (req, res, next) => {
+  const page = req.params.page || 1;
+  const skip = (page - 1) * PER_PAGE;
+  try {
+    const users = await User.find({ roles: ["user"] }, USER_ALLOW_DATA)
+      .skip(skip)
+      .limit(PER_PAGE);
+    if (!users) {
+      return createHttpError(404, messages.user_not_found);
+    }
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+const getUsersWithSearch = async (req, res, next) => {
+  const searchParam = req.params.searchParam;
+  try {
+    const users = await User.find(
+      {
+        $or: [
+          { username: { $regex: searchParam, $options: "i" } }, // 'i' seçeneği büyük/küçük harf duyarlılığını kapatır
+          { firstname: { $regex: searchParam, $options: "i" } },
+          { lastname: { $regex: searchParam, $options: "i" } },
+        ],
+      },
+      { score: { $meta: "textScore" }, ...USER_ALLOW_DATA }
+    )
+      .sort({ score: { $meta: "textScore" } })
+      .limit(10);
+    console.log(users);
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
 const sharePostForFeed = async (req, res, next) => {};
 
 module.exports = {
@@ -293,5 +294,7 @@ module.exports = {
   completemission,
   loginToken,
   uploadProfile,
+  getUserWithPage,
+  getUsersWithSearch,
   // fixGameList,
 };

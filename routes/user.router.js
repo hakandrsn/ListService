@@ -4,7 +4,6 @@ const user = require("../controller/user.controller");
 
 const router = express.Router();
 
-
 const multer = require("multer");
 
 const storage = multer.diskStorage({});
@@ -32,5 +31,8 @@ router.post(
   uploads.single("profile"),
   user.uploadProfile
 );
+
+router.get("/users/:page", authenticate, user.getUserWithPage);
+router.get("/users/search/:searchParam", authenticate, user.getUsersWithSearch);
 
 module.exports = router;
