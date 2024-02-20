@@ -40,8 +40,7 @@ const getProfile = async (req, res, next) => {
       failedMission: failedMission,
       point: point,
     };
-    console.log(point);
-    return res.status(200).json(sendavaibleUser);
+    res.status(200).json(sendavaibleUser);
   } catch (error) {
     next(error);
   }
@@ -49,20 +48,10 @@ const getProfile = async (req, res, next) => {
 
 // Register a new user
 const register = async (req, res, next) => {
-  console.log(req.body);
   try {
     const user = new User(req.body);
     await user.save();
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        fullname: `${user.firstname} ${user.lastname}`,
-      },
-      process.env.SECRET_KEY,
-      {
-        expiresIn: "5 days",
-      }
-    );
+    const token = getToken(user);
     res.json({ token });
   } catch (error) {
     next(error);
@@ -102,16 +91,7 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: messages.incorrect_password });
     }
 
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        fullname: `${user.firstname} ${user.lastname}`,
-      },
-      process.env.SECRET_KEY,
-      {
-        expiresIn: "5 days",
-      }
-    );
+    const token = getToken(user);
     res.json({ token });
   } catch (error) {
     next(error);

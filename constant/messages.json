@@ -1,5 +1,5 @@
 {
-  "id_required": "ID is required",
+  "id_required": "id_is_required",
   "mission_not_contain_data": "Mission is already included in the data",
   "mission_null": "Mission is null",
   "mission_delete_failed": "Failed to delete mission",

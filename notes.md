@@ -21,3 +21,10 @@ Yapılacaklar
 
 8. kullanıcı düzenleme
     -  kullanıcı seviye (puan,ünvan)
+    - kullanıcı verileri düzenlenecek (harf,mail,name vb.)
+9. register güvenlik yapılmalı
+10. google auth
+
+
+Frontend
+1. platform giriş sonrası şifre belirle

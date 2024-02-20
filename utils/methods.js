@@ -4,6 +4,7 @@ const Food = require("../model/food.model");
 const Game = require("../model/game.model");
 const Hobby = require("../model/hobby.model");
 const Travel = require("../model/travel.model");
+const jwt = require("jsonwebtoken");
 
 const idless = (data) => {
   var filteredDictionary = data;
@@ -74,7 +75,22 @@ const userPoint = ({ completeMission, currentMission, failedMission }) => {
   };
 };
 
+const getToken = (user) => {
+  const token = jwt.sign(
+    {
+      userId: user._id,
+      fullname: `${user.firstname} ${user.lastname}`,
+    },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: "5 days",
+    }
+  );
+  return token;
+};
+
 module.exports = {
   getCategoryDataWithId,
   userPoint,
+  getToken,
 };
