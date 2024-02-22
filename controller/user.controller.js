@@ -4,7 +4,7 @@ const messages = require("../constant/messages.json");
 const cloudinary = require("../helper/cloudinary.js");
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
-const { getCategoryDataWithId, userPoint } = require("../utils/methods.js");
+const { getCategoryDataWithId, userPoint, getToken } = require("../utils/methods.js");
 const { PER_PAGE, USER_ALLOW_DATA } = require("../constant/appConstant.js");
 
 const loginToken = async (req, res, next) => {
