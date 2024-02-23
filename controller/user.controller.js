@@ -39,6 +39,10 @@ const getProfile = async (req, res, next) => {
       currentMission: currentMission,
       failedMission: failedMission,
       point: point,
+      gender:user.gender,
+      randomRight:user.randomRight,
+      location:user.location,
+      socialPlatform:user.socialPlatform
     };
     res.status(200).json(sendavaibleUser);
   } catch (error) {
