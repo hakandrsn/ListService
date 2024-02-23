@@ -17,6 +17,8 @@ const UserSchema = new Schema(
       platformId: String,
       platformToken: String,
     },
+    gender: String,
+    location: { type: { id: String, name: String } },
     isCertified: { type: Boolean, default: false },
     randomRight: { type: Number, default: 5 },
     lastLoggedIn: Date,
