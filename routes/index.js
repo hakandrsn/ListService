@@ -7,6 +7,7 @@ const Auth = require("./auth.router");
 const User = require("./user.router");
 const DailyRecommendation = require("./dailyRecommendation.router");
 const Challenge = require("./challenge.router");
+const Random = require("./random.router");
 
 module.exports = {
   food: Food,
@@ -18,4 +19,5 @@ module.exports = {
   user: User,
   recommedation: DailyRecommendation,
   challenge: Challenge,
+  random: Random,
 };

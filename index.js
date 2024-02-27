@@ -28,6 +28,7 @@ app.use("/api/game", route.game);
 app.use("/api/hobby", route.hobby);
 app.use("/api/travel", route.travel);
 app.use("/api/challenge", route.challenge);
+app.use("/api/random", route.random);
 
 app.use("/", (req, res, next) => {
   return res.status(200).json({ title: "başarılı" });

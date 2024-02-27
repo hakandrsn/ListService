@@ -89,8 +89,78 @@ const getToken = (user) => {
   return token;
 };
 
+const getRandomModel = async (paths) => {
+  let itemData;
+  switch (paths.first) {
+    case "game":
+      if (paths.second && paths.third) {
+        itemData = await Game.aggregate([
+          { $match: { list: paths.second, list_two: paths.third } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Game.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    case "travel":
+      if (paths.second && paths.third) {
+        itemData = await Travel.aggregate([
+          { $match: { list: paths.second } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Travel.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    case "activity":
+      if (paths.second && paths.third) {
+        itemData = await Activity.aggregate([
+          { $match: { list: paths.second, list_two: paths.third } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Activity.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    case "hobby":
+      if (paths.second && paths.third) {
+        itemData = await Hobby.aggregate([
+          { $match: { list: paths.second } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Hobby.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    case "food":
+      if (paths.second && paths.third) {
+        itemData = await Food.aggregate([
+          { $match: { list: paths.second } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Food.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    case "challenge":
+      if (paths.second && paths.third) {
+        itemData = await Challenge.aggregate([
+          { $match: { list: paths.second, list_two: paths.third } },
+          { $sample: { size: 1 } },
+        ]);
+      } else {
+        itemData = await Challenge.aggregate([{ $sample: { size: 1 } }]);
+      }
+      break;
+    default:
+      itemData = null;
+  }
+  return itemData;
+};
+
 module.exports = {
   getCategoryDataWithId,
   userPoint,
   getToken,
+  getRandomModel,
 };
