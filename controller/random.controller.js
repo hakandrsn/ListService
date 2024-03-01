@@ -1,6 +1,5 @@
 const createHttpError = require("http-errors");
 const { getRandomModel } = require("../utils/methods");
-const { isEmpty } = require("lodash");
 
 const randomActivity = async (req, res, next) => {
   const body = req.body;

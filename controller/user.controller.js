@@ -4,7 +4,11 @@ const messages = require("../constant/messages.json");
 const cloudinary = require("../helper/cloudinary.js");
 const createHttpError = require("http-errors");
 const { uniq } = require("lodash");
-const { getCategoryDataWithId, userPoint, getToken } = require("../utils/methods.js");
+const {
+  getCategoryDataWithId,
+  userPoint,
+  getToken,
+} = require("../utils/methods.js");
 const { PER_PAGE, USER_ALLOW_DATA } = require("../constant/appConstant.js");
 
 const loginToken = async (req, res, next) => {
@@ -39,10 +43,10 @@ const getProfile = async (req, res, next) => {
       currentMission: currentMission,
       failedMission: failedMission,
       point: point,
-      gender:user.gender,
-      randomRight:user.randomRight,
-      location:user.location,
-      socialPlatform:user.socialPlatform
+      gender: user.gender,
+      randomRight: user.randomRight,
+      location: user.location,
+      socialPlatform: user.socialPlatform,
     };
     res.status(200).json(sendavaibleUser);
   } catch (error) {
@@ -114,6 +118,9 @@ const addMission = async (req, res, next) => {
         .status(206)
         .json({ message: messages.mission_already_available });
     } else {
+      if (!mission.category || !mission._id) {
+        throw createHttpError(404, messages.mission_null);
+      }
       const newMission = {
         id: mission._id,
         addedDate: Date.now(),
