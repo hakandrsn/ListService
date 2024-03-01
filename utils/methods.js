@@ -171,8 +171,11 @@ const getRandomModel = async (paths) => {
     default:
       itemData = list.lists_name[Math.floor(Math.random(list.lists_name))];
   }
-
-  return itemData;
+  if (itemData.length < 1) {
+    return itemData;
+  } else {
+    return [...itemData, { category: params.first }];
+  }
 };
 
 module.exports = {

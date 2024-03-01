@@ -15,6 +15,7 @@ const randomActivity = async (req, res, next) => {
     if (!response) {
       return createHttpError(404, "random_can't_find");
     }
+    console.log(response);
     res.status(200).json(response);
   } catch (error) {
     next(error);
