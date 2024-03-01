@@ -5,6 +5,7 @@ const Game = require("../model/game.model");
 const Hobby = require("../model/hobby.model");
 const Travel = require("../model/travel.model");
 const jwt = require("jsonwebtoken");
+const list = require("../constant/lists.json");
 
 const idless = (data) => {
   var filteredDictionary = data;
@@ -89,13 +90,28 @@ const getToken = (user) => {
   return token;
 };
 
+const switchResult = async () => {};
+
+const randomValue = (li) => {
+  if (Array.isArray(li)) {
+    const randomNumber = Math.floor(Math.random() * li?.length);
+    return li[randomNumber];
+  }
+  return "";
+};
+
 const getRandomModel = async (paths) => {
+  const params = {
+    first: paths.first ? paths.first : randomValue(list.lists_name),
+    second: paths.second ? paths.second : "",
+    third: paths.third ? paths.third : "",
+  };
   let itemData;
-  switch (paths.first) {
+  switch (params.first) {
     case "game":
-      if (paths.second && paths.third) {
+      if (params.second && params.third) {
         itemData = await Game.aggregate([
-          { $match: { list: paths.second, list_two: paths.third } },
+          { $match: { list: params.second, list_two: params.third } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -103,9 +119,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     case "travel":
-      if (paths.second && paths.third) {
+      if (params.second) {
         itemData = await Travel.aggregate([
-          { $match: { list: paths.second } },
+          { $match: { list: params.second } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -113,9 +129,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     case "activity":
-      if (paths.second && paths.third) {
+      if (params.second && params.third) {
         itemData = await Activity.aggregate([
-          { $match: { list: paths.second, list_two: paths.third } },
+          { $match: { list: params.second, list_two: params.third } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -123,9 +139,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     case "hobby":
-      if (paths.second && paths.third) {
+      if (params.second) {
         itemData = await Hobby.aggregate([
-          { $match: { list: paths.second } },
+          { $match: { list: params.second } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -133,9 +149,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     case "food":
-      if (paths.second && paths.third) {
+      if (params.second) {
         itemData = await Food.aggregate([
-          { $match: { list: paths.second } },
+          { $match: { list: params.second } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -143,9 +159,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     case "challenge":
-      if (paths.second && paths.third) {
+      if (params.second && params.third) {
         itemData = await Challenge.aggregate([
-          { $match: { list: paths.second, list_two: paths.third } },
+          { $match: { list: params.second, list_two: params.third } },
           { $sample: { size: 1 } },
         ]);
       } else {
@@ -153,8 +169,9 @@ const getRandomModel = async (paths) => {
       }
       break;
     default:
-      itemData = null;
+      itemData = list.lists_name[Math.floor(Math.random(list.lists_name))];
   }
+
   return itemData;
 };
 
