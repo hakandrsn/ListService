@@ -20,9 +20,9 @@ const uploads = multer({ storage, fileFilter });
 
 router.get("/profile", authenticate, user.getProfile);
 
-router.put("/addmission", authenticate, user.addMission);
-router.put("/completemission", authenticate, user.completemission);
-router.put("/failedmission", authenticate, user.failedmission);
+router.post("/addmission", authenticate, user.addMission);
+router.post("/completemission", authenticate, user.completemission);
+router.post("/failedmission", authenticate, user.failedmission);
 // router.get("/fix", user.fixGameList);
 router.post(
   "/upload-profile",

@@ -1,3 +1,4 @@
+const USER_ALLOW_RANDOM = 5;
 const PER_PAGE = 5;
 const USER_ALLOW_DATA = {
   username: 1,
@@ -11,4 +12,5 @@ const USER_ALLOW_DATA = {
 module.exports = {
   PER_PAGE,
   USER_ALLOW_DATA,
+  USER_ALLOW_RANDOM,
 };

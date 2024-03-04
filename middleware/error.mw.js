@@ -48,6 +48,8 @@ const errors = (err, req, res, next) => {
           .status(400)
           .send({ message: "Veritabanı hatası", code: err.status });
         break;
+      case "NotFoundError":
+        res.status(400).send({ message: "Bulunamadı", code: err.status });
       default:
         res.status(500).send({ message: err.message, code: err.status });
         break;

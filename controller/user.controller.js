@@ -9,12 +9,15 @@ const {
   userPoint,
   getToken,
 } = require("../utils/methods.js");
-const { PER_PAGE, USER_ALLOW_DATA } = require("../constant/appConstant.js");
+const {
+  PER_PAGE,
+  USER_ALLOW_DATA,
+  USER_ALLOW_RANDOM,
+} = require("../constant/appConstant.js");
 
 const loginToken = async (req, res, next) => {
   const { token } = req.body;
   const user = jwt.decode(token, process.env.SECRET_KEY);
-  console.log(user);
   return res.send(true);
 };
 
@@ -76,7 +79,7 @@ const login = async (req, res, next) => {
         socialPlatform: { platformToken: accessToken },
       });
       if (!facebookUser) {
-        return res.status(404).json({ message: messages.user_not_found });
+        throw createHttpError(404, messages.user_not_found);
       }
       return res.json(facebookUser.socialPlatform.platformToken);
     }
@@ -91,12 +94,11 @@ const login = async (req, res, next) => {
       user = await User.findOne({ username: emailOrUsername });
     }
     if (!user) {
-      return res.status(404).json({ message: messages.user_not_found });
     }
 
     const passwordMatch = await user.comparePassword(password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: messages.incorrect_password });
+      throw createHttpError(401, messages.incorrect_password);
     }
 
     const token = getToken(user);
@@ -111,12 +113,11 @@ const addMission = async (req, res, next) => {
     const { mission } = req.body;
     const { _id, currentMission } = req.user;
     if (!mission) throw createHttpError(404, messages.empty_mission);
-    if (currentMission?.length >= 3) {
-      return res.status(206).json({ message: messages.max_current_mission });
-    } else if (currentMission.some((i) => i._id === mission._id)) {
-      return res
-        .status(206)
-        .json({ message: messages.mission_already_available });
+    if (currentMission?.length >= USER_ALLOW_RANDOM) {
+      throw createHttpError(404, messages.max_current_mission);
+    }
+    if (currentMission.some((i) => i._id === mission._id)) {
+      throw createHttpError(404, messages.mission_already_available);
     } else {
       if (!mission.category || !mission._id) {
         throw createHttpError(404, messages.mission_null);
@@ -133,9 +134,10 @@ const addMission = async (req, res, next) => {
       if (!result) {
         throw createHttpError(404, messages.mission_save_failed);
       }
-      return res.status(200).json({ message: messages.mission_save_success });
+      res.status(200).json({ message: messages.mission_save_success });
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
@@ -232,7 +234,7 @@ const uploadProfile = async (req, res, next) => {
       { profileImage: result.url },
       { new: true }
     );
-    if (!updatedUser) return createHttpError(404, "image failed");
+    if (!updatedUser) throw createHttpError(404, "image failed");
     return res.send(true);
   } catch (error) {
     next(error);
