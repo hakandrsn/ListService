@@ -6,6 +6,132 @@ const Hobby = require("../model/hobby.model");
 const Travel = require("../model/travel.model");
 const jwt = require("jsonwebtoken");
 const list = require("../constant/lists.json");
+const { AVOID_WORDS, GENDERS } = require("../constant/appConstant");
+
+const extractUserData = (user) => {
+  const {
+    username,
+    firstname,
+    lastname,
+    birthday,
+    profileImage,
+    gender,
+    isCertified,
+    randomRight,
+    point,
+    _id,
+  } = user;
+
+  return {
+    username,
+    firstname,
+    lastname,
+    birthday,
+    profileImage,
+    gender,
+    isCertified,
+    randomRight,
+    point,
+    _id,
+  };
+};
+
+const isValidEmail = (email) => {
+  // Basit bir e-posta adresi deseni
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    return false;
+  }
+  return email.toLowerCase();
+};
+const isValidUsername = (username) => {
+  const userNameToLower = username.toLowerCase();
+  // Uygun karakterlerin kullanıldığına dair bir desen
+  const usernamePattern = /^[a-z0-9]{6,25}$/;
+  // Desenin kontrolü
+  if (!usernamePattern.test(userNameToLower)) {
+    return false; // Uygun olmayan karakterler veya uzunluk dışında
+  }
+
+  // Özel ifadelerin kontrolü (küçük harf kontrolü zaten desende)
+  if (userNameToLower !== userNameToLower.toLowerCase()) {
+    return false; // Özel ifadeler kullanılmış
+  }
+
+  return userNameToLower; // Tüm kontrolleri geçti
+};
+
+const isValidName = (name) => {
+  const nameToLower = name.toLowerCase();
+  // Uzunluk kontrolü
+  if (nameToLower.length < 2 || nameToLower.length > 50) {
+    return false;
+  }
+
+  // Özel ifadeler kontrolü
+  const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
+  if (specialCharacters.test(nameToLower)) {
+    return false;
+  }
+
+  // Sadece harf kontrolü
+  const onlyLetters = /^[a-zA-ZğüşöçİĞÜŞÖÇ\s]*$/;
+  if (!onlyLetters.test(nameToLower)) {
+    return false;
+  }
+
+  return nameToLower;
+};
+
+const isValidPassword = (password) => {
+  // Uzunluk kontrolü
+  if (password.length < 6 || password.length > 30) {
+    return false;
+  }
+
+  // Platformdan ötürü değişebilecek tercih edilmemesi gereken kelimelerin kontrolü
+  if (AVOID_WORDS.includes(password.toLowerCase())) {
+    return false;
+  }
+
+  return password;
+};
+
+const isValidDateFormat = (dateString) => {
+  // Tarih deseni kontrolü
+  const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+
+  // Desenin kontrolü
+  if (!datePattern.test(dateString)) {
+    return false; // Uygun olmayan tarih formatı
+  }
+
+  // Tarih oluşturma denemesi
+  const parts = dateString.split("/");
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Ayın dizinini (0'dan başlayarak) almak için 1 çıkarılır
+  const year = parseInt(parts[2], 10);
+  const dateObject = new Date(year, month, day);
+
+  // Tarih nesnesi oluşturulamazsa veya verilen değerlerle tarih geçersizse
+  if (
+    isNaN(dateObject.getTime()) ||
+    dateObject.getDate() !== day ||
+    dateObject.getMonth() !== month ||
+    dateObject.getFullYear() !== year
+  ) {
+    return false;
+  }
+
+  return dateString; // Tüm kontrolleri geçti
+};
+
+const isValidGender = (gender) => {
+  if (!GENDERS.includes(gender)) {
+    return false;
+  }
+  return gender;
+};
 
 const idless = (data) => {
   var filteredDictionary = data;
@@ -183,4 +309,11 @@ module.exports = {
   userPoint,
   getToken,
   getRandomModel,
+  extractUserData,
+  isValidPassword,
+  isValidName,
+  isValidUsername,
+  isValidEmail,
+  isValidDateFormat,
+  isValidGender,
 };

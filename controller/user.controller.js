@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/user.model");
+const UserInfo = require("../model/userInfo.model.js");
 const messages = require("../constant/messages.json");
 const cloudinary = require("../helper/cloudinary.js");
 const createHttpError = require("http-errors");
@@ -8,6 +9,13 @@ const {
   getCategoryDataWithId,
   userPoint,
   getToken,
+  extractUserData,
+  isValidEmail,
+  isValidName,
+  isValidUsername,
+  isValidPassword,
+  isValidDateFormat,
+  isValidGender,
 } = require("../utils/methods.js");
 const {
   PER_PAGE,
@@ -21,53 +29,43 @@ const loginToken = async (req, res, next) => {
   return res.send(true);
 };
 
-const getProfile = async (req, res, next) => {
-  const user = req.user;
-  try {
-    if (!user) return res.status(404).json({ message: "User not found" });
+// const getProfile = async (req, res, next) => {
+//   const user = req.user;
+//   try {
+//     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const completeMission = await getCategoryDataWithId(user.completeMission);
-    const currentMission = await getCategoryDataWithId(user.currentMission);
-    const failedMission = await getCategoryDataWithId(user.failedMission);
-    const point = userPoint({ completeMission, currentMission, failedMission });
+//     const completeMission = await getCategoryDataWithId(user.completeMission);
+//     const currentMission = await getCategoryDataWithId(user.currentMission);
+//     const failedMission = await getCategoryDataWithId(user.failedMission);
+//     const point = userPoint({ completeMission, currentMission, failedMission });
 
-    const sendavaibleUser = {
-      _id: user._id,
-      username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      age: user.age,
-      email: user.email,
-      birthday: user.birthday,
-      profileImage: user.profileImage,
-      followers: user.followers,
-      friends: user.friends,
-      completeMission: completeMission,
-      currentMission: currentMission,
-      failedMission: failedMission,
-      point: point,
-      gender: user.gender,
-      randomRight: user.randomRight,
-      location: user.location,
-      socialPlatform: user.socialPlatform,
-    };
-    res.status(200).json(sendavaibleUser);
-  } catch (error) {
-    next(error);
-  }
-};
+//     const sendavaibleUser = {
+//       _id: user._id,
+//       username: user.username,
+//       firstname: user.firstname,
+//       lastname: user.lastname,
+//       age: user.age,
+//       email: user.email,
+//       birthday: user.birthday,
+//       profileImage: user.profileImage,
+//       followers: user.followers,
+//       friends: user.friends,
+//       completeMission: completeMission,
+//       currentMission: currentMission,
+//       failedMission: failedMission,
+//       point: point,
+//       gender: user.gender,
+//       randomRight: user.randomRight,
+//       location: user.location,
+//       socialPlatform: user.socialPlatform,
+//     };
+//     res.status(200).json(sendavaibleUser);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 // Register a new user
-const register = async (req, res, next) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    const token = getToken(user);
-    res.json({ token });
-  } catch (error) {
-    next(error);
-  }
-};
 
 // Login with an existing user
 const login = async (req, res, next) => {
@@ -276,7 +274,87 @@ const getUsersWithSearch = async (req, res, next) => {
     next(error);
   }
 };
-const sharePostForFeed = async (req, res, next) => {};
+
+//asıl methodlar bunlar olacak
+
+const register = async (req, res, next) => {
+  try {
+    const {
+      username,
+      firstname,
+      lastname,
+      birthday,
+      profileImage,
+      gender,
+      email,
+      password,
+    } = req.body;
+    let errorMessage = [];
+    if (!isValidEmail(email)) errorMessage.push("email_error");
+    if (!isValidName(firstname)) errorMessage.push("firstname_error");
+    if (!isValidName(lastname)) errorMessage.push("lastname_error");
+    if (!isValidUsername(username)) errorMessage.push("username_error");
+    if (!isValidPassword(password)) errorMessage.push("password_error");
+    if (!isValidDateFormat(birthday)) errorMessage.push("birtday_error");
+    if (!isValidGender(gender)) errorMessage.push("gender_error");
+
+    if (errorMessage.length > 0) {
+      throw createHttpError(400, errorMessage.toString());
+    } else {
+      const saveableData = {
+        username: isValidUsername(username),
+        firstname: isValidName(firstname),
+        lastname: isValidName(lastname),
+        birthday: isValidDateFormat(birthday),
+        gender: isValidGender(gender),
+        email: isValidEmail(email),
+        password: isValidPassword(password),
+        profileImage,
+      };
+      const user = new User(saveableData);
+      if (!user) {
+        throw createHttpError(400, "user_not_found");
+      }
+      await user.save();
+      const token = getToken(user);
+      res.json({ token: token });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+//Profile
+const getProfile = async (req, res, next) => { // düzenlenecek
+  try {
+    const userData = extractUserData(req.user);
+    const missions = await UserInfo.findOne({ user: userData._id });
+    console.log(missions);
+    const totalData = { ...userData, ...missions };
+    res.status(200).json(totalData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getChallanges = async (req, res, next) => {};
+const getFavList = async (req, res, next) => {};
+const getFriends = async (req, res, next) => {};
+const getChallange = async (req, res, next) => {};
+const getFav = async (req, res, next) => {};
+const getFriend = async (req, res, next) => {};
+const setChallange = async (req, res, next) => {};
+const setFav = async (req, res, next) => {};
+const setFriend = async (req, res, next) => {};
+//mission
+const acceptMission = async (req, res, next) => {};
+const deleteMission = async (req, res, next) => {};
+const favMission = async (req, res, next) => {};
+const likeMission = async (req, res, next) => {};
+const dislikeMission = async (req, res, next) => {};
+
+//post
+const sharePost = async (req, res, next) => {};
 
 module.exports = {
   register,
@@ -289,4 +367,20 @@ module.exports = {
   uploadProfile,
   getUserWithPage,
   getUsersWithSearch,
+
+  deleteMission,
+  favMission,
+  likeMission,
+  dislikeMission,
+  sharePost,
+  acceptMission,
+  getChallanges,
+  getFavList,
+  getFriends,
+  getChallange,
+  getFav,
+  getFriend,
+  setChallange,
+  setFav,
+  setFriend,
 };

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
+const { USER_ALLOW_RANDOM, GENDERS } = require("../constant/appConstant");
 
 const UserSchema = new Schema(
   {
@@ -17,11 +18,11 @@ const UserSchema = new Schema(
       platformId: String,
       platformToken: String,
     },
-    gender: String,
+    gender: { type: String, enum: GENDERS },
     location: { type: { id: String, name: String } },
     isCertified: { type: Boolean, default: false },
-    randomRight: { type: Number, default: 5 },
     lastLoggedIn: Date,
+    randomRight: { type: Number, default: USER_ALLOW_RANDOM },
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
     point: {
       type: {
@@ -35,16 +36,6 @@ const UserSchema = new Schema(
         failedPoint: 0,
       },
     },
-    friends: { type: Number, default: 0 },
-    currentMission: [
-      { id: String, addedDate: Date, category: String, finishDate: Date },
-    ],
-    completeMission: [
-      { id: String, addedDate: Date, category: String, finishDate: Date },
-    ],
-    failedMission: [
-      { id: String, addedDate: Date, category: String, finishDate: Date },
-    ],
   },
   {
     collection: "users",
@@ -74,9 +65,9 @@ UserSchema.methods.comparePassword = async function (password) {
 };
 
 UserSchema.methods.toJSON = function () {
-  const food = this.toObject();
-  delete food.__v;
-  return food;
+  const u = this.toObject();
+  delete u.__v;
+  return u;
 };
 
 const User = mongoose.model("User", UserSchema);

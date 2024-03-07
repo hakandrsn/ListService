@@ -1,6 +1,7 @@
 // const User = require("../model/userModel.js");
 const createHttpError = require("http-errors");
 const Game = require("../model/game.model.js");
+const likeItem = require("../utils/globals.js");
 
 const getGames = async (req, res, next) => {
   try {
@@ -45,9 +46,11 @@ const saveGame = async (req, res, next) => {
 const updateGame = async (req, res, next) => {
   try {
     if (req.body._id) {
-      const backupId = req.body._id
-      delete req.body._id
-      const game = await Game.findByIdAndUpdate(backupId, req.body, { new: true });
+      const backupId = req.body._id;
+      delete req.body._id;
+      const game = await Game.findByIdAndUpdate(backupId, req.body, {
+        new: true,
+      });
       if (!game) {
         throw createHttpError(403, "Güncellenemedi");
       }
@@ -58,9 +61,26 @@ const updateGame = async (req, res, next) => {
   }
 };
 
+const likeGame = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    // Örnek olarak Game modeli üzerinde like işlemi yapalım
+    const { gameId } = req.params; // Veya req.body içerisinden alınabilir
+    const filter = { _id: gameId }; // Veya istediğiniz bir filtre
+    const update = { $inc: { "meta.likes": 1 } }; // $inc operatörüyle like alanını 1 arttır
+
+    const updatedGame = await likeItem(Game, filter, update);
+
+    res.json(updatedGame);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getGames,
   getGame,
   saveGame,
-  updateGame
+  updateGame,
+  likeGame,
 };
