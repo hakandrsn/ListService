@@ -28,13 +28,16 @@ router.get("/profile/challange", authenticate, user.getChallange);
 router.get("/profile/fav", authenticate, user.getFav);
 router.get("/profile/friend", authenticate, user.getFriend);
 
-router.post("/profile/add_challange", authenticate, user.setChallange);
+router.post("/challange/accept", authenticate, user.acceptChallange);
+router.post("/challange/failed", authenticate, user.failedChallange);
+router.post("/challange/delete", authenticate, user.deleteChallange);
+
 router.post("/profile/add_fav", authenticate, user.setFav);
 router.post("/profile/add_friend", authenticate, user.setFriend);
 
 //Mission
 router.post("/mission/accept", authenticate, user.acceptMission); //missionId gidecek
-router.post("/mission/delete", authenticate, user.deleteMission);
+router.post("/mission/past", authenticate, user.getPastMission);
 router.post("/mission/fav", authenticate, user.favMission);
 router.post("/mission/like", authenticate, user.likeMission);
 router.post("/mission/dislike", authenticate, user.dislikeMission);

@@ -312,10 +312,12 @@ const register = async (req, res, next) => {
         profileImage,
       };
       const user = new User(saveableData);
-      if (!user) {
+      const userInfo = new UserInfo({ user: user._id });
+      if (!user && !userInfo) {
         throw createHttpError(400, "user_not_found");
       }
       await user.save();
+      await userInfo.save();
       const token = getToken(user);
       res.json({ token: token });
     }
@@ -325,7 +327,8 @@ const register = async (req, res, next) => {
 };
 
 //Profile
-const getProfile = async (req, res, next) => { // düzenlenecek
+const getProfile = async (req, res, next) => {
+  // düzenlenecek
   try {
     const userData = extractUserData(req.user);
     const missions = await UserInfo.findOne({ user: userData._id });
@@ -336,19 +339,187 @@ const getProfile = async (req, res, next) => { // düzenlenecek
     next(error);
   }
 };
+const userInfoUpdater = async (user, id, list, data) => {
+  try {
+    const { _id: userId } = user;
+    const userInfo = await UserInfo.findOne({ user: userId });
 
-const getChallanges = async (req, res, next) => {};
+    if (!userInfo) {
+      throw createHttpError(400, "user_not_found");
+    }
+
+    let missionExists = userInfo[list].some((value) => value.id === id);
+
+    if (missionExists) {
+      throw createHttpError(400, `already_exists`);
+    }
+
+    const addedDate = new Date(); // Şu anın tarihini al
+    const sendData = {
+      id,
+      ...data,
+      addedDate,
+    };
+
+    userInfo[list].unshift(sendData);
+    await userInfo.save();
+
+    return userInfo;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const acceptMission = async (req, res, next) => {
+  try {
+    const { _id: missionId, category } = req.body;
+    const { _id: userId } = req.user;
+
+    if (!missionId || !category) {
+      throw createHttpError(400, "lost_info");
+    }
+    if (!userId) {
+      throw createHttpError(400, "token_required");
+    }
+
+    const result = await userInfoUpdater(
+      req.user,
+      missionId,
+      "activeMissions",
+      { category }
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getPastMission = async (req, res, next) => {
+  try {
+    const { _id: missionId, state } = req.body; // Silinecek görevin kimliği
+
+    const { _id: userId } = req.user;
+    if (!userId) createHttpError(400, "token_required");
+    if (!missionId) createHttpError(400, "missionId_required");
+
+    // Kullanıcı bilgisini bul
+    const userInfo = await UserInfo.findOne({ user: userId });
+
+    if (userInfo) {
+      // Kullanıcının aktif görevlerinde belirtilen görevi bul
+      const index = userInfo.activeMissions.findIndex(
+        (mission) => mission.id === missionId
+      );
+
+      if (index !== -1) {
+        // Görevi listeden çıkar
+        const failedMission = userInfo.activeMissions.splice(index, 1)[0];
+        // Başarısız görevleri pasif görevler listesine ekle
+        userInfo.pastMissions.push({
+          addedDate: failedMission.addedDate,
+          category: failedMission.category,
+          id: failedMission.id,
+          state,
+          finishDate: new Date(),
+        });
+        // Değişiklikleri kaydet
+        await userInfo.save();
+        res.status(200).json({ message: "Mission deleted successfully" });
+      } else {
+        // Görev bulunamadı hatası
+        createHttpError(404, "Mission not found");
+      }
+    } else {
+      // Kullanıcı bulunamadı hatası
+      createHttpError(404, "User not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const acceptChallange = async (req, res, next) => {
+  try {
+    const { _id: missionId, challangeType } = req.body;
+    const { _id: userId } = req.user;
+
+    if (!missionId || !challangeType) {
+      throw createHttpError(400, "lost_info");
+    }
+    if (!userId) {
+      throw createHttpError(400, "token_required");
+    }
+
+    const result = await userInfoUpdater(req.user, missionId, "challanges", {
+      challangeType,
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteChallange = async (req, res, next) => {}; // yapılmadı
+const failedChallange = async (req, res, next) => {
+  try {
+    const { _id: missionId } = req.body; // Başarısız meydan okumanın kimliği
+
+    const { _id: userId } = req.user;
+    if (!userId) createHttpError(400, "token_required");
+    if (!missionId) createHttpError(400, "missionId_required");
+
+    // Kullanıcı bilgisini bul
+    const userInfo = await UserInfo.findOne({ user: userId });
+
+    if (userInfo) {
+      // Kullanıcının meydan okumaları içinde belirtilen meydan okumayı bul
+      const challengeIndex = userInfo.challanges.findIndex(
+        (challenge) => challenge.id === missionId
+      );
+
+      if (challengeIndex !== -1) {
+        // Meydan okumanın durumunu false olarak ayarla
+        userInfo.challanges[challengeIndex].state = "passive";
+
+        // Değişiklikleri kaydet
+        await userInfo.save();
+        res.status(200).json({ message: "Challenge marked as failed" });
+      } else {
+        // Meydan okuma bulunamadı hatası
+        createHttpError(404, "Challenge not found");
+      }
+    } else {
+      // Kullanıcı bulunamadı hatası
+      createHttpError(404, "User not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getChallanges = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { page } = req.params;
+    const userInfo = await UserInfo.findOne(
+      { user: userId },
+      { challanges: 1 }
+    );
+    res.send(userInfo);
+  } catch (error) {
+    next(error);
+  }
+};
 const getFavList = async (req, res, next) => {};
 const getFriends = async (req, res, next) => {};
 const getChallange = async (req, res, next) => {};
 const getFav = async (req, res, next) => {};
 const getFriend = async (req, res, next) => {};
-const setChallange = async (req, res, next) => {};
 const setFav = async (req, res, next) => {};
 const setFriend = async (req, res, next) => {};
 //mission
-const acceptMission = async (req, res, next) => {};
-const deleteMission = async (req, res, next) => {};
+
 const favMission = async (req, res, next) => {};
 const likeMission = async (req, res, next) => {};
 const dislikeMission = async (req, res, next) => {};
@@ -357,30 +528,32 @@ const dislikeMission = async (req, res, next) => {};
 const sharePost = async (req, res, next) => {};
 
 module.exports = {
-  register,
-  login,
   addMission,
-  getProfile,
   failedmission,
   completemission,
   loginToken,
-  uploadProfile,
   getUserWithPage,
   getUsersWithSearch,
 
-  deleteMission,
+  uploadProfile, //
+  register, // okey
+  login, // okey
+  getProfile, // okey
+  getPastMission, //okey
   favMission,
   likeMission,
   dislikeMission,
   sharePost,
-  acceptMission,
+  acceptMission, // okey
   getChallanges,
   getFavList,
   getFriends,
   getChallange,
   getFav,
   getFriend,
-  setChallange,
+  acceptChallange, // okey
   setFav,
   setFriend,
+  failedChallange, // okey
+  deleteChallange,
 };

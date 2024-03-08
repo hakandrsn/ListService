@@ -5,7 +5,13 @@ const likeItem = require("../utils/globals.js");
 
 const getGames = async (req, res, next) => {
   try {
-    const game = await Game.find();
+    const game = await Game.find({
+      name: 1,
+      point: 1,
+      list: 1,
+      list_two: 1,
+      descriptions: 1,
+    });
     if (!game) {
       throw createHttpError(404, "Work not found");
     } else {

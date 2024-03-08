@@ -1,7 +1,27 @@
 const mongoose = require("mongoose");
+const { USER_ALLOW_RANDOM } = require("../constant/appConstant");
 const Schema = mongoose.Schema;
 
-const missionSchema = new Schema({
+const activeMissionSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  addedDate: {
+    type: Date,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  finishDate: {
+    type: Date,
+  },
+});
+
+const pastMissionSchema = new Schema({
   id: {
     type: String,
     required: true,
@@ -20,7 +40,7 @@ const missionSchema = new Schema({
   state: {
     type: String,
     required: true,
-    enum: ["current", "complete", "failed"],
+    enum: ["complete", "failed"],
   },
 });
 
@@ -47,7 +67,13 @@ const challangeSchema = new Schema({
   challangeType: {
     type: String,
     required: true,
-    enum: ["daily,weekly,monthly,yearly"],
+    enum: ["daily", "weekly", "monthly", "yearly"],
+  },
+  state: {
+    type: String,
+    required: true,
+    enum: ["active", "passive"],
+    default: "active",
   },
 });
 
@@ -74,11 +100,13 @@ const UsersInfoSchema = new Schema(
     },
 
     friends: [friendSchema],
-    missions: [missionSchema],
+    activeMissions: [activeMissionSchema],
+    pastMissions: [pastMissionSchema],
     challanges: [challangeSchema],
     myFavList: [myFavListSchema],
   },
   {
+    collection: "userInfos",
     timestamps: true,
   }
 );
