@@ -55,7 +55,7 @@ const friendSchema = new Schema({
   },
 });
 
-const challangeSchema = new Schema({
+const challengeSchema = new Schema({
   id: {
     type: String,
     required: true,
@@ -64,7 +64,7 @@ const challangeSchema = new Schema({
     type: Date,
     required: true,
   },
-  challangeType: {
+  challengeType: {
     type: String,
     required: true,
     enum: ["daily", "weekly", "monthly", "yearly"],
@@ -102,7 +102,7 @@ const UsersInfoSchema = new Schema(
     friends: [friendSchema],
     activeMissions: [activeMissionSchema],
     pastMissions: [pastMissionSchema],
-    challanges: [challangeSchema],
+    challenges: [challengeSchema],
     myFavList: [myFavListSchema],
   },
   {

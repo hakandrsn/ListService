@@ -439,20 +439,20 @@ const getPastMission = async (req, res, next) => {
   }
 };
 
-const acceptChallange = async (req, res, next) => {
+const acceptchallenge = async (req, res, next) => {
   try {
-    const { _id: missionId, challangeType } = req.body;
+    const { _id: missionId, challengeType } = req.body;
     const { _id: userId } = req.user;
 
-    if (!missionId || !challangeType) {
+    if (!missionId || !challengeType) {
       throw createHttpError(400, "lost_info");
     }
     if (!userId) {
       throw createHttpError(400, "token_required");
     }
 
-    const result = await userInfoUpdater(req.user, missionId, "challanges", {
-      challangeType,
+    const result = await userInfoUpdater(req.user, missionId, "challenges", {
+      challengeType,
     });
 
     res.status(200).json(result);
@@ -460,8 +460,8 @@ const acceptChallange = async (req, res, next) => {
     next(error);
   }
 };
-const deleteChallange = async (req, res, next) => {}; // yapılmadı
-const failedChallange = async (req, res, next) => {
+const deletechallenge = async (req, res, next) => {}; // yapılmadı
+const failedchallenge = async (req, res, next) => {
   try {
     const { _id: missionId } = req.body; // Başarısız meydan okumanın kimliği
 
@@ -474,13 +474,13 @@ const failedChallange = async (req, res, next) => {
 
     if (userInfo) {
       // Kullanıcının meydan okumaları içinde belirtilen meydan okumayı bul
-      const challengeIndex = userInfo.challanges.findIndex(
+      const challengeIndex = userInfo.challenges.findIndex(
         (challenge) => challenge.id === missionId
       );
 
       if (challengeIndex !== -1) {
         // Meydan okumanın durumunu false olarak ayarla
-        userInfo.challanges[challengeIndex].state = "passive";
+        userInfo.challenges[challengeIndex].state = "passive";
 
         // Değişiklikleri kaydet
         await userInfo.save();
@@ -498,26 +498,68 @@ const failedChallange = async (req, res, next) => {
   }
 };
 
-const getChallanges = async (req, res, next) => {
+const getChallenges = async (req, res, next) => {
   try {
     const { _id: userId } = req.user;
-    const { page } = req.params;
-    const userInfo = await UserInfo.findOne(
-      { user: userId },
-      { challanges: 1 }
-    );
-    res.send(userInfo);
+    let { page } = req.params;
+    const PAGE_SIZE = 10; // Sayfa boyutu, isteğe bağlı olarak değiştirilebilir
+
+    // Sayfa numarasını varsayılan olarak 1 olarak ayarla ve kontrol et
+    page = page ? parseInt(page) : 1;
+    if (isNaN(page) || page < 1) {
+      page = 1;
+    }
+
+    // İlgili sayfadaki meydan okumalarını almak için başlangıç indeksini hesapla
+    const startIndex = (page - 1) * PAGE_SIZE;
+
+    // Kullanıcının meydan okumalarını bul ve belirli sayfadaki meydan okumalarını al
+    const userInfo = await UserInfo.findOne({ user: userId }).populate({
+      path: "challenges",
+      options: { skip: startIndex, limit: PAGE_SIZE },
+    });
+    console.log(page, userInfo);
+    if (userInfo) {
+      // İlgili sayfadaki meydan okumalarını gönder
+      res.status(200).json(userInfo.challenges);
+    } else {
+      // Kullanıcı bulunamadı hatası
+      throw createHttpError(404, "User not found");
+    }
   } catch (error) {
     next(error);
   }
 };
-const getFavList = async (req, res, next) => {};
-const getFriends = async (req, res, next) => {};
-const getChallange = async (req, res, next) => {};
-const getFav = async (req, res, next) => {};
-const getFriend = async (req, res, next) => {};
+
+const getchallenge = async (req, res, next) => {
+  try {
+    const { _id: userId } = req.user;
+    const { id: challengeId } = req.body;
+
+    // Kullanıcının sadece belirli challenge ID'ye sahip meydan okumasını getir
+    const challenge = await UserInfo.findOne(
+      { user: userId, "challenges.id": challengeId }, // Kullanıcının ID'si ve aranan challenge ID'si
+      { "challenges.$": 1 } // Projeksiyon: Sadece aranan challenge'ı getir
+    );
+
+    if (!challenge || !challenge.challenges || challenge.challenges.length === 0) {
+      throw createHttpError(404, "Challenge not found");
+    }
+
+    // İlgili challenge'ı istemciye gönder
+    res.status(200).json(challenge.challenges[0]); // Çünkü $ projection, sadece bir öğe döndürecek
+  } catch (error) {
+    next(error);
+  }
+};
+
 const setFav = async (req, res, next) => {};
+const getFav = async (req, res, next) => {};
+const getFavList = async (req, res, next) => {};
+
 const setFriend = async (req, res, next) => {};
+const getFriends = async (req, res, next) => {};
+const getFriend = async (req, res, next) => {};
 //mission
 
 const favMission = async (req, res, next) => {};
@@ -545,15 +587,15 @@ module.exports = {
   dislikeMission,
   sharePost,
   acceptMission, // okey
-  getChallanges,
+  getChallenges, // okey
   getFavList,
   getFriends,
-  getChallange,
+  getchallenge, //okey
   getFav,
   getFriend,
-  acceptChallange, // okey
+  acceptchallenge, // okey
   setFav,
   setFriend,
-  failedChallange, // okey
-  deleteChallange,
+  failedchallenge, // okey
+  deletechallenge,
 };

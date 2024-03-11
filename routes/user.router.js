@@ -20,17 +20,17 @@ const uploads = multer({ storage, fileFilter });
 
 //Profile
 router.get("/profile", authenticate, user.getProfile); // kullanıcı temel bilgileri ve missions lar gelecek
-router.get("/profile/challanges/:page", authenticate, user.getChallanges);
+router.get("/profile/challenges/:page", authenticate, user.getChallenges);
 router.get("/profile/favlist/:page", authenticate, user.getFavList);
 router.get("/profile/friends/:page", authenticate, user.getFriends);
 
-router.get("/profile/challange", authenticate, user.getChallange);
+router.get("/profile/challenge", authenticate, user.getchallenge);
 router.get("/profile/fav", authenticate, user.getFav);
 router.get("/profile/friend", authenticate, user.getFriend);
 
-router.post("/challange/accept", authenticate, user.acceptChallange);
-router.post("/challange/failed", authenticate, user.failedChallange);
-router.post("/challange/delete", authenticate, user.deleteChallange);
+router.post("/challenge/accept", authenticate, user.acceptchallenge);
+router.post("/challenge/failed", authenticate, user.failedchallenge);
+router.post("/challenge/delete", authenticate, user.deletechallenge);
 
 router.post("/profile/add_fav", authenticate, user.setFav);
 router.post("/profile/add_friend", authenticate, user.setFriend);
