@@ -37,6 +37,7 @@ const extractUserData = (user) => {
 };
 
 const isValidEmail = (email) => {
+  if(!email) return false
   // Basit bir e-posta adresi deseni
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
@@ -45,9 +46,10 @@ const isValidEmail = (email) => {
   return email.toLowerCase();
 };
 const isValidUsername = (username) => {
+  if(!username) return false
   const userNameToLower = username.toLowerCase();
   // Uygun karakterlerin kullanıldığına dair bir desen
-  const usernamePattern = /^[a-z0-9]{6,25}$/;
+  const usernamePattern = /^[a-z0-9]{6,20}$/;
   // Desenin kontrolü
   if (!usernamePattern.test(userNameToLower)) {
     return false; // Uygun olmayan karakterler veya uzunluk dışında
@@ -62,9 +64,10 @@ const isValidUsername = (username) => {
 };
 
 const isValidName = (name) => {
+  if(!name) return false
   const nameToLower = name.toLowerCase();
   // Uzunluk kontrolü
-  if (nameToLower.length < 2 || nameToLower.length > 50) {
+  if (nameToLower.length < 2 || nameToLower.length > 30) {
     return false;
   }
 
@@ -75,7 +78,7 @@ const isValidName = (name) => {
   }
 
   // Sadece harf kontrolü
-  const onlyLetters = /^[a-zA-ZğüşöçİĞÜŞÖÇ\s]*$/;
+  const onlyLetters = /^[a-zA-ZğüşöçİıIĞÜŞÖÇ\s]*$/;
   if (!onlyLetters.test(nameToLower)) {
     return false;
   }
@@ -84,13 +87,14 @@ const isValidName = (name) => {
 };
 
 const isValidPassword = (password) => {
+  if(!password) return false
   // Uzunluk kontrolü
   if (password.length < 6 || password.length > 30) {
     return false;
   }
 
   // Platformdan ötürü değişebilecek tercih edilmemesi gereken kelimelerin kontrolü
-  if (AVOID_WORDS.includes(password.toLowerCase())) {
+  if (AVOID_WORDS.includes(password?.toLowerCase())) {
     return false;
   }
 
@@ -98,6 +102,7 @@ const isValidPassword = (password) => {
 };
 
 const isValidDateFormat = (dateString) => {
+  if(!dateString) return false
   // Tarih deseni kontrolü
   const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
 
@@ -127,6 +132,7 @@ const isValidDateFormat = (dateString) => {
 };
 
 const isValidGender = (gender) => {
+  if(!gender) return false
   if (!GENDERS.includes(gender)) {
     return false;
   }
@@ -210,13 +216,11 @@ const getToken = (user) => {
     },
     process.env.SECRET_KEY,
     {
-      expiresIn: "5 days",
+      expiresIn: `${process.env.EXPIRESIN_TOKEN} days`,
     }
   );
   return token;
 };
-
-const switchResult = async () => {};
 
 const randomValue = (li) => {
   if (Array.isArray(li)) {

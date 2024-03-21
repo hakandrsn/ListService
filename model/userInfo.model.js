@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { USER_ALLOW_RANDOM } = require("../constant/appConstant");
 const Schema = mongoose.Schema;
 
+const postsSchema = new Schema({
+  image: String,
+});
+
 const activeMissionSchema = new Schema({
   id: {
     type: String,
@@ -104,6 +108,7 @@ const UsersInfoSchema = new Schema(
     pastMissions: [pastMissionSchema],
     challenges: [challengeSchema],
     myFavList: [myFavListSchema],
+    posts: [postsSchema],
   },
   {
     collection: "userInfos",
