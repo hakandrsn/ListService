@@ -13,7 +13,7 @@ const randomActivity = async (req, res, next) => {
     };
     let response =await randomGetterMethod();
     if (!response) {
-      return createHttpError(404, "random_can't_find");
+      throw createHttpError(404, "random_can't_find");
     }
     console.log(response);
     res.status(200).json(response);

@@ -26,14 +26,12 @@ const UserSchema = new Schema(
     roles: { type: [String], enum: ["user", "admin"], default: ["user"] },
     point: {
       type: {
-        expectedPoint: Number,
-        complatePoint: Number,
-        failedPoint: Number,
+        missionPoint: Number,
+        challengePoint: Number,
       },
       default: {
-        expectedPoint: 0,
-        complatePoint: 0,
-        failedPoint: 0,
+        missionPoint: 0,
+        challengePoint: 0,
       },
     },
   },

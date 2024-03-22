@@ -12,6 +12,7 @@ const ChallengeSchema = new Schema(
     destination: String, // hedef
     transportationType: String,
     activitiesPlanned: Array,
+    category: { type: String, default: "challenge" },
   },
   {
     collection: "travel",

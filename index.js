@@ -21,6 +21,7 @@ app.use(morgan("common"));
 app.use("/auth", route.auth);
 app.use("/user", route.user);
 app.use("/api/recommendation", route.recommedation);
+app.use("/api/category", route.category);
 
 app.use("/api/food", route.food);
 app.use("/api/activity", route.activity);

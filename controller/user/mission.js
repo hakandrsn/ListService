@@ -1,6 +1,8 @@
 const createHttpError = require("http-errors");
 const { userInfoUpdater } = require("./profile");
 const UserInfo = require("../../model/userInfo.model.js");
+const { selectModel } = require("../../helper/helperMethods.js");
+const User = require("../../model/user.model.js");
 
 const acceptMission = async (req, res, next) => {
   try {
@@ -50,6 +52,21 @@ const getPastMission = async (req, res, next) => {
           state,
           finishDate: new Date(),
         });
+        if (state === "complete") {
+          const Model = await selectModel(failedMission.category);
+          const pathPoint = await Model.findOne(
+            { _id: missionId },
+            { point: 1 }
+          );
+          console.log(pathPoint.point);
+          const userUpdate = await User.findByIdAndUpdate(userId, {
+            $inc: { "point.missionPoint": pathPoint.point },
+          });
+          if (!userUpdate) {
+            throw createHttpError(400, "user point can not added");
+          }
+        }
+
         // Değişiklikleri kaydet
         await userInfo.save();
         res.status(200).json({ message: `Mission ${state} successfully` });

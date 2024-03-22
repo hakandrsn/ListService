@@ -17,6 +17,7 @@ const ActivitySchema = new Schema(
     },
     participants: { type: [Number], default: [1] },
     price: String,
+    category: { type: String, default: "activity" },
   },
   {
     collection: "activity",

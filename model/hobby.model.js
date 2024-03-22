@@ -11,6 +11,7 @@ const HobbySchema = new Schema(
     hobbyTime: Number,
     level: Number,
     eventParticipants: Number,
+    category: { type: String, default: "hobby" },
   },
   {
     collection: "hobby",

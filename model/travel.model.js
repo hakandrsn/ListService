@@ -10,6 +10,7 @@ const TravelSchema = new Schema(
     destination: String, // hedef
     transportationType: String,
     activitiesPlanned: Array,
+    category: { type: String, default: "travel" },
   },
   {
     collection: "travel",

@@ -8,8 +8,10 @@ const User = require("./user.router");
 const DailyRecommendation = require("./dailyRecommendation.router");
 const Challenge = require("./challenge.router");
 const Random = require("./random.router");
+const Category = require("./category.router");
 
 module.exports = {
+  category: Category,
   food: Food,
   activity: Activity,
   game: Game,

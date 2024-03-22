@@ -13,6 +13,7 @@ const FoodSchema = new Schema(
     cookingMethod: String,
     serviceSize: Schema.Types.Mixed,
     caloricValue: Number,
+    category: { type: String, default: "food" },
   },
   { collection: "food", timestamps: true }
 );

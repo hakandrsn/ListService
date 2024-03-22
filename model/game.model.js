@@ -13,6 +13,7 @@ const GameSchema = new Schema(
     rules: Array,
     time: String,
     eventParticipants: { type: [Number], default: [1] },
+    category: { type: String, default: "game" },
   },
   {
     collection: "game",
