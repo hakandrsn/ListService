@@ -115,7 +115,7 @@ const getProfile = async (req, res, next) => {
 
 const getProfileInfo = async (req, res, next) => {
   try {
-    const { _id } = req.params;
+    const { _id } = req.user;
     console.log(_id);
     const userInfos = await UserInfo.findOne({ user: _id });
     if (!userInfos) throw createHttpError(404, "userinfo_not_found");
