@@ -5,16 +5,17 @@ const { userInfoUpdater } = require("./profile");
 
 const acceptchallenge = async (req, res, next) => {
   try {
-    const { _id: missionId, challengeType, userId } = req.body;
-
+    const { _id: missionId, challengeType } = req.body;
+    const { _id: userId } = req.user;
+    
     if (!missionId || !challengeType) {
       throw createHttpError(400, "lost_info");
     }
     if (!userId) {
       throw createHttpError(400, "token_required");
     }
-
-    const result = await userInfoUpdater(userId, missionId, "challenges", {
+    const userInfo = await UserInfo.findOne({ user: userId });
+    const result = await userInfoUpdater(userInfo, missionId, "challenges", {
       challengeType,
     });
 

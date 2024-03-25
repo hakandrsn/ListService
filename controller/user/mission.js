@@ -6,7 +6,8 @@ const User = require("../../model/user.model.js");
 
 const acceptMission = async (req, res, next) => {
   try {
-    const { _id: missionId, category, userId } = req.body;
+    const { _id: missionId, category } = req.body;
+    const { _id: userId, randomRight } = req.user;
 
     if (!missionId || !category) {
       throw createHttpError(400, "lost_info");
@@ -15,11 +16,41 @@ const acceptMission = async (req, res, next) => {
       throw createHttpError(400, "token_required");
     }
 
-    const result = await userInfoUpdater(userId, missionId, "activeMissions", {
-      category,
-    });
+    if (randomRight < 1) throw createHttpError(303, "go to profile for more.");
 
-    res.status(200).json(result);
+    const userInfo = await UserInfo.findOne({ user: userId });
+
+    if(!userInfo) throw createHttpError(303,"User info not found")
+
+    if (userInfo.activeMissions.length >= 3) {
+      throw createHttpError(
+        300,
+        "You are at the maximum number of missions, finish before adding."
+      );
+    }
+    if (!userInfo) {
+      throw createHttpError(400, "user_not_found");
+    }
+
+    let missionExists = userInfo.activeMissions.some(
+      (value) => value.id === id
+    );
+
+    if (missionExists) {
+      throw createHttpError(400, `already_exists`);
+    }
+
+    const addedDate = new Date();
+    const sendData = {
+      id,
+      ...data,
+      addedDate,
+    };
+
+    userInfo.activeMissions.unshift(sendData);
+    await userInfo.save();
+
+    res.status(200).json(userInfo);
   } catch (error) {
     next(error);
   }
@@ -27,7 +58,8 @@ const acceptMission = async (req, res, next) => {
 
 const getPastMission = async (req, res, next) => {
   try {
-    const { _id: missionId, state, userId } = req.body; // Silinecek görevin kimliği
+    const { _id: missionId, state } = req.body; // Silinecek görevin kimliği
+    const { _id: userId } = req.user;
 
     if (!userId) throw createHttpError(400, "token_required");
     if (!missionId) throw createHttpError(400, "missionId_required");

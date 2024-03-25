@@ -2,6 +2,7 @@ const User = require("../../model/user.model");
 const UserInfo = require("../../model/userInfo.model.js");
 const createHttpError = require("http-errors");
 const cloudinary = require("../../helper/cloudinary.js");
+const messages = require("../../constant/messages.json");
 const {
   getToken,
   extractUserData,
@@ -116,7 +117,7 @@ const getProfile = async (req, res, next) => {
 const getProfileInfo = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    console.log(_id);
+    if (!_id) throw createHttpError(404, "Access denied");
     const userInfos = await UserInfo.findOne({ user: _id });
     if (!userInfos) throw createHttpError(404, "userinfo_not_found");
     res.status(200).json(userInfos);
@@ -124,10 +125,8 @@ const getProfileInfo = async (req, res, next) => {
     next(error);
   }
 };
-const userInfoUpdater = async (userId, id, list, data) => {
+const userInfoUpdater = async (userInfo, id, list, data) => {
   try {
-    const userInfo = await UserInfo.findOne({ user: userId });
-
     if (!userInfo) {
       throw createHttpError(400, "user_not_found");
     }

@@ -7,7 +7,6 @@ const Auth = require("./auth.router");
 const User = require("./user.router");
 const DailyRecommendation = require("./dailyRecommendation.router");
 const Challenge = require("./challenge.router");
-const Random = require("./random.router");
 const Category = require("./category.router");
 
 module.exports = {
@@ -21,5 +20,4 @@ module.exports = {
   user: User,
   recommedation: DailyRecommendation,
   challenge: Challenge,
-  random: Random,
 };

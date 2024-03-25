@@ -3,4 +3,5 @@ module.exports = {
   ...require("./mission"),
   ...require("./challenge"),
   ...require("./yapilacak"),
+  ...require("./random"),
 };
