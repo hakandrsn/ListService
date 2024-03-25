@@ -20,7 +20,7 @@ const acceptMission = async (req, res, next) => {
 
     const userInfo = await UserInfo.findOne({ user: userId });
 
-    if(!userInfo) throw createHttpError(303,"User info not found")
+    if (!userInfo) throw createHttpError(303, "User info not found");
 
     if (userInfo.activeMissions.length >= 3) {
       throw createHttpError(
@@ -33,7 +33,7 @@ const acceptMission = async (req, res, next) => {
     }
 
     let missionExists = userInfo.activeMissions.some(
-      (value) => value.id === id
+      (value) => value.id === missionId
     );
 
     if (missionExists) {
@@ -42,15 +42,15 @@ const acceptMission = async (req, res, next) => {
 
     const addedDate = new Date();
     const sendData = {
-      id,
-      ...data,
+      id: missionId,
+      category,
       addedDate,
     };
 
     userInfo.activeMissions.unshift(sendData);
     await userInfo.save();
 
-    res.status(200).json(userInfo);
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     next(error);
   }

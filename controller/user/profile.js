@@ -217,11 +217,12 @@ const randomRightAdd = async (req, res, next) => {
     const { _id: userId } = req.user;
     if (!userId) throw createHttpError(400, "token_required");
     const userUpdate = await User.findByIdAndUpdate(userId, {
-      $inc: { "point.missionPoint": 1 },
+      $inc: { "randomRight": 1 },
     });
     if (!userUpdate) {
       throw createHttpError(400, "user cant update");
     }
+    res.status(200).send({message:"You win new change"})
   } catch (error) {
     next(error);
   }
