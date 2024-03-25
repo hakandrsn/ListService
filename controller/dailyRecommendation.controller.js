@@ -18,7 +18,7 @@ const getDailyRecommendation = async (req, res) => {
       .exec();
     // Öneriyi veritabanından bul
 
-    res.json({ message: "Oy başarıyla eklendi", recommendations });
+    res.json(recommendations);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Sunucu hatası" });
@@ -38,7 +38,5 @@ const setDailyRecommendation = async (req, res, next) => {
     next(e);
   }
 };
-
-
 
 module.exports = { getDailyRecommendation, setDailyRecommendation };
