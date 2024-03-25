@@ -18,7 +18,7 @@ const getDailyRecommendation = async (req, res) => {
       .exec();
     // Öneriyi veritabanından bul
 
-    res.json(recommendations);
+    res.status(200).json(recommendations[0]);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Sunucu hatası" });
