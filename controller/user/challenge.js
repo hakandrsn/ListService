@@ -7,7 +7,7 @@ const acceptchallenge = async (req, res, next) => {
   try {
     const { _id: missionId, challengeType } = req.body;
     const { _id: userId } = req.user;
-    
+
     if (!missionId || !challengeType) {
       throw createHttpError(400, "lost_info");
     }
@@ -27,7 +27,8 @@ const acceptchallenge = async (req, res, next) => {
 const deletechallenge = async (req, res, next) => {}; // yapılmadı
 const failedchallenge = async (req, res, next) => {
   try {
-    const { _id: missionId, userId } = req.body; // Başarısız meydan okumanın kimliği
+    const { _id: missionId } = req.body; // Başarısız meydan okumanın kimliği
+    const { _id: userId } = req.user;
     if (!userId) createHttpError(400, "token_required");
     if (!missionId) createHttpError(400, "missionId_required");
 
@@ -62,7 +63,9 @@ const failedchallenge = async (req, res, next) => {
 
 const getChallenges = async (req, res, next) => {
   try {
-    const { userId, page } = req.body;
+    const { page } = req.body;
+    const { _id: userId } = req.user;
+    if (!userId) createHttpError(400, "token_required");
     const PAGE_SIZE = 10; // Sayfa boyutu, isteğe bağlı olarak değiştirilebilir
 
     // Sayfa numarasını varsayılan olarak 1 olarak ayarla ve kontrol et
@@ -94,8 +97,9 @@ const getChallenges = async (req, res, next) => {
 
 const getchallenge = async (req, res, next) => {
   try {
-    const { id: challengeId, userId } = req.body;
-
+    const { id: challengeId } = req.body;
+    const { _id: userId } = req.user;
+    if (!userId) throw createHttpError(400, "Denied access");
     // Kullanıcının sadece belirli challenge ID'ye sahip meydan okumasını getir
     const challenge = await UserInfo.findOne(
       { user: userId, "challenges.id": challengeId }, // Kullanıcının ID'si ve aranan challenge ID'si

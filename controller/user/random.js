@@ -3,9 +3,11 @@ const { getRandomModel } = require("../../utils/methods");
 const User = require("../../model/user.model");
 
 const randomActivity = async (req, res, next) => {
-  const body = req.body;
-//   const { _id: userId } = req.user;
   try {
+    const body = req.body;
+    const { _id: userId } = req.user;
+    if (!userId) throw createHttpError(400, "Denied access");
+    if (typeof body !== "object") throw createHttpError(400, "Type error");
     const randomGetterMethod = async () => {
       let randomAct = await getRandomModel(body);
       if (randomAct.length < 1) {

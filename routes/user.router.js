@@ -4,38 +4,40 @@ const user = require("../controller/user");
 
 const router = express.Router();
 
+router.use(authenticate);
 //Profile
-router.get("/profile", authenticate, user.getProfile); // kullanıcı temel bilgileri ve missions lar gelecek
-router.get("/profile/info/", authenticate, user.getProfileInfo);
-router.get("/profile/challenges/:page", authenticate, user.getChallenges);
-router.get("/profile/favlist/:page", authenticate, user.getFavList);
-router.get("/profile/friends/:page", authenticate, user.getFriends);
+router.get("/profile", user.getProfile); // kullanıcı temel bilgileri ve missions lar gelecek
+router.get("/profile/info/", user.getProfileInfo);
+router.get("/profile/challenges/:page", user.getChallenges);
+router.get("/profile/favlist/:page", user.getFavList);
+router.get("/profile/friends/:page", user.getFriends);
+router.post("/profile/randomRightAdd", user.randomRightAdd);
 
-router.get("/profile/challenge", authenticate, user.getchallenge);
-router.get("/profile/fav", authenticate, user.getFav);
-router.get("/profile/friend", authenticate, user.getFriend);
+router.get("/profile/challenge", user.getchallenge);
+router.get("/profile/fav", user.getFav);
+router.get("/profile/friend", user.getFriend);
 
-router.post("/challenge/accept", authenticate, user.acceptchallenge);
-router.post("/challenge/failed", authenticate, user.failedchallenge);
-router.post("/challenge/delete", authenticate, user.deletechallenge);
+router.post("/challenge/accept", user.acceptchallenge);
+router.post("/challenge/failed", user.failedchallenge);
+router.post("/challenge/delete", user.deletechallenge);
 
-router.post("/profile/add_fav", authenticate, user.setFav);
-router.post("/profile/add_friend", authenticate, user.setFriend);
+router.post("/profile/add_fav", user.setFav);
+router.post("/profile/add_friend", user.setFriend);
 
 //Mission
-router.post("/mission/accept", authenticate, user.acceptMission); //missionId gidecek
-router.post("/mission/past", authenticate, user.getPastMission);
-router.post("/mission/fav", authenticate, user.favMission);
-router.post("/mission/like", authenticate, user.likeMission);
-router.post("/mission/dislike", authenticate, user.dislikeMission);
+router.post("/mission/accept", user.acceptMission); //missionId gidecek
+router.post("/mission/past", user.getPastMission);
+router.post("/mission/fav", user.favMission);
+router.post("/mission/like", user.likeMission);
+router.post("/mission/dislike", user.dislikeMission);
 
 //post
-router.post("/share/new", authenticate, user.sharePost);
+router.post("/share/new", user.sharePost);
 
-router.get("/users/:page", authenticate, user.getUserWithPage);
-router.get("/users/search/:searchParam", authenticate, user.getUsersWithSearch);
+router.get("/users/:page", user.getUserWithPage);
+router.get("/users/search/:searchParam", user.getUsersWithSearch);
 
 //random
-router.post("/random/randomMission", authenticate, user.randomActivity);
+router.post("/random/randomMission", user.randomActivity);
 
 module.exports = router;
