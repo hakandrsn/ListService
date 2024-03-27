@@ -36,7 +36,8 @@ const relogin = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { emailOrUsername, password, accessToken } = req.body;
-
+  const fixEmailOrUserName = emailOrUsername?.toString().toLowerCase().trim()
+  const fixPassword = password?.toString().trim();
   try {
     if (accessToken) {
       const facebookUser = await User.findOne({
@@ -52,15 +53,15 @@ const login = async (req, res, next) => {
       return emailPattern.test(email);
     }
     let user;
-    if (isValidEmail(emailOrUsername)) {
-      user = await User.findOne({ email: emailOrUsername });
+    if (isValidEmail(fixEmailOrUserName)) {
+      user = await User.findOne({ email: fixEmailOrUserName });
     } else {
-      user = await User.findOne({ username: emailOrUsername });
+      user = await User.findOne({ username: fixEmailOrUserName });
     }
     if (!user) {
     }
 
-    const passwordMatch = await user.comparePassword(password);
+    const passwordMatch = await user.comparePassword(fixPassword);
     if (!passwordMatch) {
       throw createHttpError(401, messages.incorrect_password);
     }
@@ -138,7 +139,6 @@ const getProfileInfo = async (req, res, next) => {
   try {
     const { _id } = req.user;
     if (!_id) throw createHttpError(404, "Access denied");
-    console.log(_id);
     const userInfos = await UserInfo.findOne({ user: _id });
     if (!userInfos) throw createHttpError(404, "userinfo_not_found");
     res.status(200).json(userInfos);
