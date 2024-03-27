@@ -12,10 +12,12 @@ const USER_ALLOW_DATA = {
 
 const AVOID_WORDS = ["password", "123456", "qwerty", "abc123"];
 const GENDERS = ["male", "female"];
+const TITLES = ["beginner", "good", ""];
 module.exports = {
   PER_PAGE,
   USER_ALLOW_DATA,
   USER_ALLOW_RANDOM,
   AVOID_WORDS,
   GENDERS,
+  TITLES,
 };

@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(authenticate);
 //Profile
 router.get("/profile", user.getProfile); // kullanıcı temel bilgileri ve missions lar gelecek
-router.get("/profile/info/", user.getProfileInfo);
+router.get("/profile/info", user.getProfileInfo);
 router.get("/profile/challenges/:page", user.getChallenges);
 router.get("/profile/favlist/:page", user.getFavList);
 router.get("/profile/friends/:page", user.getFriends);

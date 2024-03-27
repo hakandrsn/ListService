@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-const { USER_ALLOW_RANDOM, GENDERS } = require("../constant/appConstant");
+const {
+  USER_ALLOW_RANDOM,
+  GENDERS,
+  TITLES,
+} = require("../constant/appConstant");
 
 const UserSchema = new Schema(
   {
     username: { type: String, required: true, unique: true },
+    title: { type: String, enum: TITLES, default: "beginner" },
     firstname: { type: String, index: true },
     lastname: { type: String, index: true },
     age: Number,

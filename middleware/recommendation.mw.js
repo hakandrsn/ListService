@@ -12,7 +12,7 @@ const Food = require("../model/food.model.js");
 const recommendation = () => {
   // const rule = new schedule.RecurrenceRule();
   // rule.minute = 30;
-  schedule.scheduleJob("0 22 * * *", async function () {
+  schedule.scheduleJob("0 0 * * *", async function () {
     try {
       const randomGame = await Game.aggregate([{ $sample: { size: 1 } }]);
       const randomActivity = await Activity.aggregate([
@@ -39,10 +39,18 @@ const recommendation = () => {
         food: randomFoods,
         travel: randomTravel[0]?._id,
         hobby: randomHobby[0]?._id,
-        challange: randomChllenge[0]?._id,
+        challenge: randomChllenge[0]?._id,
       };
       const rec = new DailyRecommendation(randomDaily);
       await rec.save();
+
+      const allUser = await User.find({});
+      allUser.forEach((user) => {
+        user.randomRight = 5;
+      });
+
+      Promise.all(allUser.map((user) => user.save()));
+
       console.log("Daily recommendation created");
     } catch (error) {
       console.log("başarılamadı günlük seçici");

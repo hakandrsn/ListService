@@ -13,6 +13,26 @@ const {
   isValidDateFormat,
   isValidGender,
 } = require("../../utils/methods.js");
+const jwt = require("jsonwebtoken");
+
+const relogin = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+    const expirationTime = decodedToken.exp * 1000; // UNIX zaman damgası saniye cinsinden olduğu için 1000 ile çarpıyoruz (milisaniye olarak işlem yapmak için)
+    const currentTime = Date.now(); // Şu anki zamanı alıyoruz
+
+    const isExp = currentTime >= expirationTime;
+
+    if (isExp) {
+      res.status(200).json({ token });
+    } else {
+      res.status(400).json({ message: "Please log in." });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 const login = async (req, res, next) => {
   const { emailOrUsername, password, accessToken } = req.body;
@@ -118,6 +138,7 @@ const getProfileInfo = async (req, res, next) => {
   try {
     const { _id } = req.user;
     if (!_id) throw createHttpError(404, "Access denied");
+    console.log(_id);
     const userInfos = await UserInfo.findOne({ user: _id });
     if (!userInfos) throw createHttpError(404, "userinfo_not_found");
     res.status(200).json(userInfos);
@@ -217,12 +238,12 @@ const randomRightAdd = async (req, res, next) => {
     const { _id: userId } = req.user;
     if (!userId) throw createHttpError(400, "token_required");
     const userUpdate = await User.findByIdAndUpdate(userId, {
-      $inc: { "randomRight": 1 },
+      $inc: { randomRight: 1 },
     });
     if (!userUpdate) {
       throw createHttpError(400, "user cant update");
     }
-    res.status(200).send({message:"You win new change"})
+    res.status(200).send({ message: "You win new change" });
   } catch (error) {
     next(error);
   }
@@ -238,4 +259,5 @@ module.exports = {
   getUsersWithSearch,
   getProfileInfo,
   randomRightAdd,
+  relogin,
 };

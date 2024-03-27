@@ -17,5 +17,6 @@ const uploads = multer({ storage, fileFilter });
 
 router.post("/register", uploads.single("profile"), user.register);
 router.post("/login", user.login);
+router.post("/relogin", user.relogin);
 
 module.exports = router;
